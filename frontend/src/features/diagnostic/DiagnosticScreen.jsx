@@ -11,6 +11,7 @@ import Feedback from '../../ui/Feedback.jsx';
 import NumberInput from '../../ui/NumberInput.jsx';
 import ScreenHeader from '../../ui/ScreenHeader.jsx';
 import CardDeck from '../lesson/CardDeck.jsx';
+import DiagnosticVisual from './DiagnosticVisual.jsx';
 
 /** @param {{ section: { title: string }, onBack: () => void, onDone: () => void }} props */
 export default function DiagnosticScreen({ section, onBack, onDone }) {
@@ -68,7 +69,10 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
   return (
     <main>
       <ScreenHeader title={section.title} progress={`${i + 1}/${diag.items.length}`} onBack={onBack} onRestart={restart} />
-      <p className={card.card}>{item.prompt}</p>
+      <div className={card.card}>
+        <DiagnosticVisual itemId={item.id} />
+        <p style={{ margin: 'var(--sp-2) 0 0', fontWeight: 600, textAlign: 'center' }}>{item.prompt}</p>
+      </div>
       {item.choices ? (
         <ChoiceList label={item.prompt} options={item.choices} value={value} onChange={setValue} />
       ) : (
