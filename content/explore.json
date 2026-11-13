@@ -1,0 +1,17 @@
+{
+  "$comment": "Teks layar Eksplorasi (F01, F06). Placeholder {…} diisi aplikasi dari engine.",
+  "title": "Eksplorasi",
+  "intro": "Geser sudut pusat. Perhatikan bagian lingkaran yang ikut berubah.",
+  "sliderAngle": "Sudut pusat",
+  "sliderRadius": "Jari-jari",
+  "toggle": { "arc": "Busur", "sector": "Juring", "both": "Keduanya" },
+  "fractionLine": "{theta}° ÷ 360° = {fraction} lingkaran",
+  "arcLine": "Busur = {fraction} × keliling ({circumference} cm) = {arc} cm",
+  "sectorLine": "Juring = {fraction} × luas ({area} cm²) = {sector} cm²",
+  "keyIdea": "Busur itu garis → pakai keliling. Juring itu daerah → pakai luas.",
+  "reset": "Ulangi",
+  "back": "Kembali",
+  "next": "Lanjut",
+  "topView": "Tampak atas",
+  "fallbackNote": "Tampilan 2D dipakai karena 3D tidak tersedia di HP ini."
+}

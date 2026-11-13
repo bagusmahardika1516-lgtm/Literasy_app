@@ -1,0 +1,152 @@
+{
+  "$comment": "Sumber: content.md §4. 'model' = hasil merumuskan (formulate) dalam besaran matematika; kunci jawaban diverifikasi otomatis oleh content_check (Python) dan content.test.js (JS).",
+  "problems": [
+    {
+      "id": "P01", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL01", "IL02"], "context": null,
+      "stem": ["Sebuah lingkaran memiliki jari-jari 7 cm.", "Sudut pusatnya 90°.", "Berapa panjang busurnya?"],
+      "model": { "r": 7, "theta": 90 }, "asked": "arcLength", "pi": "22/7",
+      "answer": { "value": 11, "unit": "cm" },
+      "hints": ["Yang ditanya garis atau daerah?", "Busur → θ/360° × 2πr", "θ/360 = ¼; keliling = 44 cm; ¼ × 44 = …"],
+      "selfExplain": "SE1"
+    },
+    {
+      "id": "P02", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL01", "IL02"], "context": null,
+      "stem": ["Sebuah lingkaran memiliki jari-jari 7 cm.", "Sudut pusatnya 90°.", "Berapa luas juringnya?"],
+      "model": { "r": 7, "theta": 90 }, "asked": "sectorArea", "pi": "22/7",
+      "answer": { "value": 38.5, "unit": "cm2" },
+      "hints": ["Yang ditanya garis atau daerah?", "Juring → θ/360° × πr²", "¼ × luas lingkaran (154 cm²) = …"]
+    },
+    {
+      "id": "P03", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL02"], "context": null,
+      "stem": ["Jari-jari lingkaran 21 cm.", "Sudut pusatnya 60°.", "Berapa panjang busurnya?"],
+      "model": { "r": 21, "theta": 60 }, "asked": "arcLength", "pi": "22/7",
+      "answer": { "value": 22, "unit": "cm" },
+      "hints": ["60° itu berapa bagian dari 360°?", "Panjang busur = ⅙ × keliling", "Keliling = 2 × 22/7 × 21 = 132 cm; ⅙ × 132 = …"]
+    },
+    {
+      "id": "P04", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL02"], "context": null,
+      "stem": ["Jari-jari lingkaran 21 cm.", "Sudut pusatnya 60°.", "Berapa luas juringnya?"],
+      "model": { "r": 21, "theta": 60 }, "asked": "sectorArea", "pi": "22/7",
+      "answer": { "value": 231, "unit": "cm2" },
+      "hints": ["60° = ⅙ lingkaran", "Luas juring = ⅙ × luas lingkaran", "Luas = 22/7 × 21 × 21 = 1386 cm²; ⅙ × 1386 = …"]
+    },
+    {
+      "id": "P05", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL02"], "context": null,
+      "stem": ["Jari-jari lingkaran 10 cm.", "Sudut pusatnya 36°.", "Gunakan π = 3,14.", "Berapa panjang busurnya?"],
+      "model": { "r": 10, "theta": 36 }, "asked": "arcLength", "pi": "3.14",
+      "answer": { "value": 6.28, "unit": "cm" },
+      "hints": ["r = 10 bukan kelipatan 7 → π = 3,14", "36/360 = 1/10", "Keliling = 62,8 cm; 1/10 × 62,8 = …"]
+    },
+    {
+      "id": "P06", "level": "L1", "mlProcess": ["employ"], "clTags": ["IL02"], "context": null,
+      "stem": ["Jari-jari lingkaran 10 cm.", "Sudut pusatnya 180°.", "Gunakan π = 3,14.", "Berapa luas juringnya?"],
+      "model": { "r": 10, "theta": 180 }, "asked": "sectorArea", "pi": "3.14",
+      "answer": { "value": 157, "unit": "cm2" },
+      "hints": ["180° = setengah lingkaran", "Luas juring = ½ × πr²", "Luas = 3,14 × 100 = 314; ½ × 314 = …"]
+    },
+    {
+      "id": "P07", "level": "L2", "mlProcess": ["formulate", "employ"], "clTags": ["IL04", "EL05", "GL05"], "context": "personal", "scene": "pizza",
+      "stem": ["Sebuah pizza berdiameter 28 cm.", "Pizza dipotong menjadi 8 bagian sama besar.", "Berapa luas satu potong pizza?"],
+      "given": { "d": 28, "pieces": 8 },
+      "model": { "r": 14, "theta": 45 }, "asked": "sectorArea", "pi": "22/7",
+      "answer": { "value": 77, "unit": "cm2" },
+      "hints": ["Potongan pizza itu busur atau juring? Diameter 28 → r = ?", "8 potong sama besar → θ = 360/8 = 45°", "Luas pizza = 22/7 × 14 × 14 = 616; ⅛ × 616 = …"],
+      "misconceptions": [
+        { "answer": 308, "id": "diameter_as_radius", "feedback": "Periksa: diameter 28, jari-jarinya berapa?" },
+        { "answer": 11, "id": "swap_formula", "feedback": "Itu panjang busur. Juring adalah daerah → pakai luas." }
+      ],
+      "selfExplain": "SE3"
+    },
+    {
+      "id": "P08", "level": "L2", "mlProcess": ["formulate", "employ"], "clTags": ["IL04", "EL05"], "context": "personal", "scene": "clock",
+      "stem": ["Jarum menit sebuah jam panjangnya 7 cm.", "Jarum bergerak selama 20 menit.", "Berapa jarak yang ditempuh ujung jarum?"],
+      "given": { "length": 7, "minutes": 20 },
+      "model": { "r": 7, "theta": 120 }, "asked": "arcLength", "pi": "22/7",
+      "answer": { "value": 14.67, "unit": "cm" },
+      "hints": ["Ujung jarum bergerak di sepanjang… (busur!)", "60 menit = 360°, jadi 20 menit = …°", "20 menit = 120° = ⅓; keliling = 44 cm; ⅓ × 44 = …"],
+      "misconceptions": [
+        { "answer": 2.44, "id": "minutes_as_degrees", "feedback": "20 menit bukan 20°. Satu jam = 360°." }
+      ]
+    },
+    {
+      "id": "P09", "level": "L2", "mlProcess": ["formulate", "employ"], "clTags": ["IL04", "EL05"], "context": "occupational", "scene": "sprinkler",
+      "stem": ["Penyiram taman menjangkau 7 m.", "Penyiram berputar 270°.", "Berapa luas rumput yang tersiram?"],
+      "given": { "reach": 7, "turn": 270 },
+      "model": { "r": 7, "theta": 270 }, "asked": "sectorArea", "pi": "22/7",
+      "answer": { "value": 115.5, "unit": "m2" },
+      "hints": ["Daerah tersiram itu busur atau juring?", "270° = ¾ lingkaran", "Luas lingkaran r = 7 m = 154 m²; ¾ × 154 = …"]
+    },
+    {
+      "id": "P10", "level": "L2", "mlProcess": ["formulate", "employ"], "clTags": ["IL04", "EL05"], "context": "societal", "scene": "ferrisWheel",
+      "stem": ["Sebuah bianglala berdiameter 42 m.", "Bianglala memiliki 12 kabin berjarak sama.", "Berapa jarak antarkabin di sepanjang lingkaran?"],
+      "given": { "d": 42, "cabins": 12 },
+      "model": { "r": 21, "theta": 30 }, "asked": "arcLength", "pi": "22/7",
+      "answer": { "value": 11, "unit": "m" },
+      "hints": ["Jarak di sepanjang lingkaran = panjang busur", "12 kabin → θ = 360/12 = 30° → 1/12 keliling", "Keliling = 22/7 × 42 = 132 m; 132/12 = …"]
+    },
+    {
+      "id": "P11", "level": "L3", "mlProcess": ["employ"], "clTags": ["IL04"], "context": null,
+      "stem": ["Panjang busur sebuah lingkaran 22 cm.", "Jari-jarinya 14 cm.", "Berapa besar sudut pusatnya?"],
+      "model": { "arc": 22, "r": 14 }, "asked": "theta", "pi": "22/7",
+      "answer": { "value": 90, "unit": "deg" },
+      "hints": ["Panjang busur bagian dari… (keliling)", "θ/360 = panjang busur ÷ keliling", "Keliling = 88; 22/88 = ¼; ¼ × 360° = …"]
+    },
+    {
+      "id": "P12", "level": "L3", "mlProcess": ["employ"], "clTags": ["IL04"], "context": null,
+      "stem": ["Luas sebuah juring 77 cm².", "Sudut pusatnya 45°.", "Berapa jari-jari lingkarannya?"],
+      "model": { "area": 77, "theta": 45 }, "asked": "radius", "pi": "22/7",
+      "answer": { "value": 14, "unit": "cm" },
+      "hints": ["45° = ⅛ lingkaran", "Luas lingkaran = 8 × 77", "616 = 22/7 × r² → r² = 196 → r = …"]
+    },
+    {
+      "id": "P13", "level": "L3", "mlProcess": ["employ"], "clTags": ["IL04"], "context": null,
+      "stem": ["Panjang busur sebuah lingkaran 44 cm.", "Sudut pusatnya 120°.", "Berapa jari-jari lingkarannya?"],
+      "model": { "arc": 44, "theta": 120 }, "asked": "radius", "pi": "22/7",
+      "answer": { "value": 21, "unit": "cm" },
+      "hints": ["120° = ⅓ lingkaran", "Keliling = 3 × 44 = 132", "132 = 2 × 22/7 × r → r = 132 × 7 / 44 = …"]
+    },
+    {
+      "id": "P14", "level": "L3", "mlProcess": ["formulate", "employ"], "clTags": ["IL04", "IL05"], "context": null,
+      "stem": ["Sebuah juring memiliki jari-jari 14 cm.", "Sudut pusatnya 90°.", "Berapa keliling juring tersebut?"],
+      "model": { "r": 14, "theta": 90 }, "asked": "sectorPerimeter", "pi": "22/7",
+      "answer": { "value": 50, "unit": "cm" },
+      "hints": ["Tepi juring terdiri dari apa saja?", "Keliling juring = r + r + panjang busur", "Panjang busur = 22; 14 + 14 + 22 = …"],
+      "misconceptions": [
+        { "answer": 22, "id": "arc_only", "feedback": "Tepi juring juga punya dua sisi lurus." }
+      ],
+      "selfExplain": "SE4"
+    },
+    {
+      "id": "P15", "level": "L4", "mlProcess": ["formulate", "employ", "interpret"], "clTags": ["IL04", "EL05", "GL02"], "context": "societal", "scene": "park",
+      "stem": ["Sebuah taman berbentuk juring.", "Jari-jarinya 14 m dan sudut pusatnya 90°.", "Seluruh tepi taman akan dipagari.", "Harga pagar Rp25.000 per meter.", "Berapa biaya memagari seluruh tepi taman?"],
+      "model": { "r": 14, "theta": 90, "multiplier": 25000 }, "asked": "sectorPerimeter", "pi": "22/7",
+      "answer": { "value": 1250000, "unit": "rp" },
+      "decision": { "question": "Apakah uang Rp1.000.000 cukup?", "rule": "<=", "threshold": 1000000, "answer": "tidak" },
+      "hints": ["Pagar ada di seluruh tepi → keliling juring", "Keliling juring × harga per meter", "Keliling = 50 m; 50 × 25.000 = …; bandingkan dengan 1.000.000"]
+    },
+    {
+      "id": "P16", "level": "L4", "mlProcess": ["formulate", "employ", "interpret"], "clTags": ["IL04", "GL05"], "context": "personal", "scene": "pizza",
+      "stem": ["Pizza A berdiameter 28 cm, dipotong 8 sama besar.", "Pizza B berdiameter 21 cm, dipotong 6 sama besar.", "Potongan pizza mana yang lebih luas?"],
+      "model": { "a": { "r": 14, "theta": 45 }, "b": { "r": 10.5, "theta": 60 } }, "asked": "compareSectorArea", "pi": "22/7",
+      "answer": { "value": "A" },
+      "choices": ["A", "B", "Sama"],
+      "hints": ["Bandingkan luas satu potong masing-masing", "Pizza A: r = 14, θ = 45°; pizza B: r = 10,5, θ = 60°", "A = ⅛ × 616; B = ⅙ × 346,5; bandingkan"]
+    },
+    {
+      "id": "P17", "level": "L4", "mlProcess": ["interpret"], "clTags": ["GL02", "GL04"], "context": "scientific",
+      "stem": ["Jari-jari sebuah lingkaran 7 cm.", "Dina berkata: \"Busur 180° panjangnya sama dengan diameter.\"", "Benarkah pendapat Dina?"],
+      "model": { "r": 7, "theta": 180, "claim": "arcEqualsDiameter" }, "asked": "evaluateClaim", "pi": "22/7",
+      "answer": { "value": "tidak" },
+      "choices": ["ya", "tidak"],
+      "hints": ["Hitung keduanya lalu bandingkan", "Busur 180° = ½ × keliling", "½ × 44 = 22; diameter = 14; sama?"]
+    },
+    {
+      "id": "P18", "level": "L4", "mlProcess": ["formulate", "employ", "interpret"], "clTags": ["IL04", "GL02"], "context": "personal", "scene": "cake",
+      "stem": ["Kue bolu bundar berdiameter 20 cm.", "Ani memotong satu potong bersudut 36°.", "Gunakan π = 3,14.", "Berapa luas potongan kue Ani?"],
+      "model": { "r": 10, "theta": 36 }, "asked": "sectorArea", "pi": "3.14",
+      "answer": { "value": 31.4, "unit": "cm2" },
+      "decision": { "question": "Ani ingin potongan minimal 30 cm². Apakah cukup?", "rule": ">=", "threshold": 30, "answer": "ya" },
+      "hints": ["36° = berapa bagian? r = ?", "Luas juring = 1/10 × 3,14 × 10²", "1/10 × 314 = …; bandingkan dengan 30"]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+.main {
+  margin-top: 12vh;
+}
+
+.scale {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 4px;
+  margin: var(--sp-5) 0 var(--sp-2);
+}
+
+.dot {
+  min-height: var(--touch);
+  border: 2px solid var(--c-line);
+  border-radius: 8px;
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+}
+
+.on {
+  border-color: var(--c-sector);
+  background: var(--c-sector);
+  color: var(--c-on-primary);
+}
+
+.ends {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  margin-bottom: var(--sp-5);
+}

@@ -1,0 +1,8 @@
+.steps {
+  padding-left: var(--sp-5);
+  margin: 0 0 var(--sp-3);
+}
+
+.steps li {
+  margin-bottom: var(--sp-2);
+}

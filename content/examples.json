@@ -1,0 +1,94 @@
+{
+  "$comment": "Contoh terurai WE1–WE6 (content.md §3). Ditampilkan satu langkah per ketukan (EL04).",
+  "stepLabels": {
+    "asked": "Ditanya",
+    "given": "Diketahui",
+    "fraction": "Pecahan sudut",
+    "formula": "Rumus",
+    "compute": "Hitung",
+    "check": "Periksa"
+  },
+  "examples": [
+    {
+      "id": "WE1", "title": "Panjang busur",
+      "stem": ["Lingkaran dengan jari-jari 14 cm.", "Sudut pusatnya 90°.", "Tentukan panjang busurnya."],
+      "visual": { "angle": 90, "radius": 14, "highlight": "arc" },
+      "steps": [
+        { "step": "asked", "text": "Panjang busur → busur itu garis → pakai keliling → satuan cm." },
+        { "step": "given", "text": "r = 14 cm, θ = 90°." },
+        { "step": "fraction", "text": "θ/360° = 90/360 = 1/4." },
+        { "step": "formula", "text": "Panjang busur = θ/360° × 2πr." },
+        { "step": "compute", "text": "= 1/4 × 2 × 22/7 × 14 = 1/4 × 88 = 22 cm." },
+        { "step": "check", "text": "Keliling 88 cm, seperempatnya 22 ✓. Satuan cm ✓." }
+      ],
+      "selfExplain": "SE1"
+    },
+    {
+      "id": "WE2", "title": "Luas juring (data sama)",
+      "stem": ["Lingkaran dengan jari-jari 14 cm.", "Sudut pusatnya 90°.", "Tentukan luas juringnya."],
+      "visual": { "angle": 90, "radius": 14, "highlight": "sector" },
+      "steps": [
+        { "step": "asked", "text": "Luas juring → juring itu daerah → pakai luas → satuan cm²." },
+        { "step": "given", "text": "r = 14 cm, θ = 90°." },
+        { "step": "fraction", "text": "θ/360° = 1/4." },
+        { "step": "formula", "text": "Luas juring = θ/360° × πr²." },
+        { "step": "compute", "text": "= 1/4 × 22/7 × 14 × 14 = 1/4 × 616 = 154 cm²." },
+        { "step": "check", "text": "Luas lingkaran 616 cm², seperempatnya 154 ✓. Satuan cm² ✓." }
+      ],
+      "selfExplain": "SE2"
+    },
+    {
+      "id": "WE3", "title": "Panjang busur, sudut lain",
+      "stem": ["Lingkaran dengan jari-jari 21 cm.", "Sudut pusatnya 120°.", "Tentukan panjang busurnya."],
+      "visual": { "angle": 120, "radius": 21, "highlight": "arc" },
+      "steps": [
+        { "step": "asked", "text": "Panjang busur → pakai keliling." },
+        { "step": "given", "text": "r = 21 cm, θ = 120°." },
+        { "step": "fraction", "text": "120/360 = 1/3." },
+        { "step": "formula", "text": "Panjang busur = θ/360° × 2πr." },
+        { "step": "compute", "text": "Keliling = 2 × 22/7 × 21 = 132. Panjang busur = 1/3 × 132 = 44 cm." },
+        { "step": "check", "text": "Sepertiga dari 132 adalah 44 ✓." }
+      ]
+    },
+    {
+      "id": "WE4", "title": "Luas juring dengan π = 3,14",
+      "stem": ["Lingkaran dengan jari-jari 10 cm.", "Sudut pusatnya 72°.", "Tentukan luas juringnya."],
+      "visual": { "angle": 72, "radius": 10, "highlight": "sector" },
+      "steps": [
+        { "step": "asked", "text": "Luas juring → pakai luas lingkaran." },
+        { "step": "given", "text": "r = 10 cm (bukan kelipatan 7, jadi π = 3,14), θ = 72°." },
+        { "step": "fraction", "text": "72/360 = 1/5." },
+        { "step": "formula", "text": "Luas juring = θ/360° × πr²." },
+        { "step": "compute", "text": "Luas lingkaran = 3,14 × 100 = 314. Luas juring = 1/5 × 314 = 62,8 cm²." },
+        { "step": "check", "text": "Seperlima dari 314 kira-kira 63 ✓. Satuan cm² ✓." }
+      ]
+    },
+    {
+      "id": "WE5", "title": "Mencari sudut pusat",
+      "stem": ["Panjang busur sebuah lingkaran 22 cm.", "Jari-jarinya 14 cm.", "Berapa sudut pusatnya?"],
+      "visual": { "angle": 90, "radius": 14, "highlight": "arc" },
+      "steps": [
+        { "step": "asked", "text": "Sudut pusat θ." },
+        { "step": "given", "text": "Panjang busur 22 cm, r = 14 cm." },
+        { "step": "fraction", "text": "Keliling = 88 cm. Busur adalah bagian keliling: 22/88 = 1/4." },
+        { "step": "formula", "text": "θ = (panjang busur ÷ keliling) × 360°." },
+        { "step": "compute", "text": "θ = 1/4 × 360° = 90°." },
+        { "step": "check", "text": "1/4 × 88 = 22 ✓." }
+      ]
+    },
+    {
+      "id": "WE6", "title": "Soal cerita: pagar taman",
+      "stem": ["Sebuah taman berbentuk juring.", "Jari-jarinya 14 m dan sudut pusatnya 90°.", "Seluruh tepi taman akan dipagari.", "Berapa panjang pagar?"],
+      "visual": { "angle": 90, "radius": 14, "highlight": "both" },
+      "steps": [
+        { "step": "asked", "text": "Panjang pagar = keliling juring (dua jari-jari + busur)." },
+        { "step": "given", "text": "r = 14 m, θ = 90°." },
+        { "step": "fraction", "text": "θ/360° = 1/4." },
+        { "step": "formula", "text": "Keliling juring = r + r + panjang busur." },
+        { "step": "compute", "text": "Panjang busur = 1/4 × 88 = 22 m. Pagar = 14 + 14 + 22 = 50 m." },
+        { "step": "check", "text": "Pagar tidak hanya busur; tepi lurus juga dipagari ✓." }
+      ],
+      "selfExplain": "SE4"
+    }
+  ]
+}

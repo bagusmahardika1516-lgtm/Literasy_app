@@ -1,0 +1,53 @@
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.col {
+  border: 3px solid;
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-2);
+  text-align: center;
+}
+
+.col p {
+  margin: 0 0 var(--sp-1);
+}
+
+.arc {
+  border-color: var(--c-arc);
+}
+
+.sector {
+  border-color: var(--c-sector);
+}
+
+.visual {
+  width: 100%;
+  aspect-ratio: 1 / 0.95;
+}
+
+.name {
+  margin: var(--sp-1) 0;
+}
+
+.arc .name,
+.arc .formula {
+  color: var(--c-arc);
+}
+
+.sector .name,
+.sector .formula {
+  color: var(--c-sector);
+}
+
+.part {
+  font-weight: 700;
+}
+
+.formula {
+  font-weight: 700;
+  font-size: var(--fs-small);
+}

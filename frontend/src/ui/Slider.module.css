@@ -1,0 +1,46 @@
+.row {
+  margin-bottom: var(--sp-3);
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.value {
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.value.angle {
+  color: var(--c-angle);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.range {
+  flex: 1;
+  min-height: var(--touch);
+  accent-color: var(--c-muted);
+}
+
+.range.angle {
+  accent-color: var(--c-angle);
+}
+
+.step {
+  width: var(--touch);
+  height: var(--touch);
+  border-radius: 50%;
+  border: 2px solid var(--c-line);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font-size: var(--fs-title);
+  cursor: pointer;
+}

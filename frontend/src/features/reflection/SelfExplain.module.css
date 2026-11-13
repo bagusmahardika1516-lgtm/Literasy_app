@@ -1,0 +1,14 @@
+.question {
+  font-weight: 700;
+}
+
+.text {
+  width: 100%;
+  padding: var(--sp-3);
+  border: 2px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  margin-bottom: var(--sp-3);
+}

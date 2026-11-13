@@ -1,0 +1,42 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.visual {
+  width: 70%;
+  max-width: 240px;
+  aspect-ratio: 1 / 0.95;
+  margin: var(--sp-5) auto var(--sp-3);
+}
+
+.title {
+  text-align: center;
+  font-size: 26px;
+}
+
+.tagline {
+  text-align: center;
+  color: var(--c-muted);
+}
+
+.points {
+  padding-left: var(--sp-5);
+  margin: var(--sp-3) 0 var(--sp-5);
+}
+
+.points li {
+  margin-bottom: var(--sp-2);
+}
+
+.bottom {
+  margin-top: auto;
+}
+
+.note {
+  margin-top: var(--sp-2);
+  text-align: center;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}

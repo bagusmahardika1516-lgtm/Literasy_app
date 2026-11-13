@@ -1,0 +1,22 @@
+.box {
+  margin: var(--sp-2) 0 var(--sp-3);
+}
+
+.hint {
+  padding: var(--sp-3);
+  border-left: 4px solid var(--c-line);
+  background: var(--c-surface-2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.label {
+  display: block;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  font-weight: 600;
+}
+
+.none {
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}

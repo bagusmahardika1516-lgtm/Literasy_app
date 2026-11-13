@@ -1,0 +1,41 @@
+.intro {
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.sentences {
+  padding-left: var(--sp-5);
+  margin: 0 0 var(--sp-3);
+}
+
+.sentences li {
+  margin-bottom: var(--sp-2);
+}
+
+.word {
+  min-height: 36px;
+  margin: 2px 2px 2px 0;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c-ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+.on {
+  border-color: var(--c-ink);
+  background: var(--c-surface-2);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.onStatic {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.picked {
+  font-size: var(--fs-small);
+}

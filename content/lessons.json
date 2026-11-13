@@ -1,0 +1,86 @@
+{
+  "$comment": "Kartu konsep & remedial (content.md §1–2). body ≤ 40 kata (agents.md G1). visual: gambar SVG 2D.",
+  "cards": {
+    "C1": {
+      "title": "Sudut pusat",
+      "body": "Sudut pusat adalah sudut yang titik sudutnya di pusat lingkaran. Sudut ini diapit dua jari-jari. Satu putaran penuh besarnya 360°.",
+      "visual": { "angle": 60, "radius": 7, "highlight": "none" },
+      "clTags": ["IL03"]
+    },
+    "C2": {
+      "title": "Pecahan sudut",
+      "body": "Sudut pusat menentukan berapa bagian lingkaran yang diambil. Caranya: bagi sudut pusat dengan 360°. Contoh: 90° ÷ 360° = 1/4 lingkaran.",
+      "formula": "bagian lingkaran = θ/360°",
+      "visual": { "angle": 90, "radius": 7, "highlight": "sector" },
+      "clTags": ["IL02"]
+    },
+    "C3": {
+      "title": "Busur",
+      "body": "Busur adalah bagian dari keliling lingkaran. Bentuknya garis lengkung. Karena itu, panjang busur dihitung dari keliling.",
+      "formula": "Panjang busur = θ/360° × 2πr",
+      "unit": "Satuan panjang: cm atau m",
+      "tone": "arc",
+      "visual": { "angle": 90, "radius": 14, "highlight": "arc" },
+      "clTags": ["IL01", "EL02"]
+    },
+    "C4": {
+      "title": "Juring",
+      "body": "Juring adalah bagian dari daerah lingkaran, seperti potongan pizza. Juring dibatasi dua jari-jari dan satu busur. Karena itu, luas juring dihitung dari luas lingkaran.",
+      "formula": "Luas juring = θ/360° × πr²",
+      "unit": "Satuan luas: cm² atau m²",
+      "tone": "sector",
+      "visual": { "angle": 90, "radius": 14, "highlight": "sector" },
+      "clTags": ["IL01", "EL02"]
+    },
+    "C6": {
+      "title": "Langkah menyelesaikan soal",
+      "body": "1) Apa yang ditanya? 2) Apa yang diketahui? 3) Hitung θ/360°. 4) Pilih rumus. 5) Hitung. 6) Periksa satuan dan kewajaran jawaban.",
+      "visual": { "angle": 90, "radius": 14, "highlight": "both" },
+      "clTags": ["IL02", "IL05"]
+    },
+    "R-Bagian": {
+      "title": "Bagian-bagian lingkaran",
+      "body": "Jari-jari: garis dari titik pusat ke lingkaran. Diameter: garis dari tepi ke tepi melalui titik pusat. Panjang diameter = 2 × jari-jari.",
+      "visual": { "angle": 0, "radius": 7, "highlight": "none" },
+      "clTags": ["IL03"]
+    },
+    "R-Keliling": {
+      "title": "Keliling lingkaran",
+      "body": "Keliling adalah panjang seluruh tepi lingkaran. Untuk r = 7 cm: K = 2 × 22/7 × 7 = 44 cm.",
+      "formula": "K = 2πr",
+      "tone": "arc",
+      "visual": { "angle": 360, "radius": 7, "highlight": "arc" },
+      "clTags": ["IL03"]
+    },
+    "R-Luas": {
+      "title": "Luas lingkaran",
+      "body": "Luas adalah besar daerah di dalam lingkaran. Untuk r = 7 cm: L = 22/7 × 7 × 7 = 154 cm².",
+      "formula": "L = πr²",
+      "tone": "sector",
+      "visual": { "angle": 360, "radius": 7, "highlight": "sector" },
+      "clTags": ["IL03"]
+    },
+    "R-Putaran": {
+      "title": "Satu putaran penuh",
+      "body": "Satu putaran penuh mengelilingi titik pusat besarnya 360°. Setengah putaran 180°, seperempat putaran 90°.",
+      "visual": { "angle": 360, "radius": 7, "highlight": "none" },
+      "clTags": ["IL03"]
+    },
+    "R-Pecahan": {
+      "title": "Sudut sebagai pecahan",
+      "body": "Bagi lingkaran sama besar. Dibagi 4 → tiap bagian 90° = 1/4. Dibagi 6 → 60° = 1/6. Dibagi 8 → 45° = 1/8.",
+      "visual": { "angle": 90, "radius": 7, "highlight": "sector" },
+      "clTags": ["IL03"]
+    }
+  },
+  "decks": {
+    "concept": ["C1", "C2", "C3", "C4", "C6"]
+  },
+  "contrast": {
+    "title": "Bedakan busur dan juring",
+    "arc": { "name": "BUSUR", "kind": "garis lengkung", "part": "bagian dari KELILING", "formula": "θ/360° × 2πr", "unit": "cm" },
+    "sector": { "name": "JURING", "kind": "daerah", "part": "bagian dari LUAS", "formula": "θ/360° × πr²", "unit": "cm²" },
+    "same": "Yang sama: keduanya dikali θ/360°.",
+    "different": "Yang beda: busur memakai keliling, juring memakai luas."
+  }
+}

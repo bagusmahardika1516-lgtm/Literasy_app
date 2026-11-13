@@ -1,0 +1,351 @@
+{
+  "$comment": "Uji Literasi Matematis (pretest/posttest) — sumber: 'Soal Mathematical literacy.docx' Tabel 2. Tanpa petunjuk/umpan balik. Kunci & skor hanya dipakai backend (GET /api/mltest mengirim soal TANPA kunci). Skor tahap item T1 & T3 adalah PENYESUAIAN SEMENTARA (lihat 'rubricNote') menunggu konfirmasi pengembang.",
+  "items": [
+    {
+      "id": "T1",
+      "indicator": "Mathematical Reasoning",
+      "mlProcess": "reasoning",
+      "title": "Memilih desain taman",
+      "stem": [
+        "Sekolah akan membuat taman berbentuk juring lingkaran.",
+        "Desain A: jari-jari 14 m, sudut pusat 90°.",
+        "Desain B: jari-jari 7 m, sudut pusat 180°.",
+        "Sekolah ingin memilih taman yang lebih luas.",
+        "Desain mana yang sebaiknya dipilih?"
+      ],
+      "rubricNote": "Dokumen asli: 6 tahap, skor tahap 1–5 (1+2+1+1+1). Sementara tahap 5 dan 6 berbagi 1 poin (0,5 + 0,5).",
+      "stages": [
+        {
+          "id": "s1",
+          "prompt": "Apa yang harus kamu lakukan untuk memilih desain?",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Memilih desain dengan jari-jari terbesar",
+            "Menghitung luas juring kedua desain, lalu membandingkannya",
+            "Memilih desain dengan sudut pusat terbesar"
+          ],
+          "answer": "Menghitung luas juring kedua desain, lalu membandingkannya"
+        },
+        {
+          "id": "s2",
+          "prompt": "Rumus apa yang kamu pakai?",
+          "type": "choice",
+          "score": 2,
+          "choices": [
+            "s = θ/360° × 2πr",
+            "L = πr²",
+            "L = θ/360° × πr²"
+          ],
+          "answer": "L = θ/360° × πr²"
+        },
+        {
+          "id": "s3",
+          "prompt": "Luas taman Desain A",
+          "type": "number",
+          "unit": "m²",
+          "score": 1,
+          "answer": 154
+        },
+        {
+          "id": "s4",
+          "prompt": "Luas taman Desain B",
+          "type": "number",
+          "unit": "m²",
+          "score": 1,
+          "answer": 77
+        },
+        {
+          "id": "s5",
+          "prompt": "Bandingkan kedua luas",
+          "type": "choice",
+          "score": 0.5,
+          "choices": [
+            "Luas A lebih kecil dari luas B",
+            "Luas A lebih besar dari luas B",
+            "Luas A sama dengan luas B"
+          ],
+          "answer": "Luas A lebih besar dari luas B"
+        },
+        {
+          "id": "s6",
+          "prompt": "Desain yang sebaiknya dipilih",
+          "type": "choice",
+          "score": 0.5,
+          "choices": [
+            "Desain A",
+            "Desain B"
+          ],
+          "answer": "Desain A"
+        },
+        {
+          "id": "s7",
+          "prompt": "Jelaskan alasanmu dengan singkat",
+          "type": "text",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": "T2",
+      "indicator": "Formulating Situations Mathematically",
+      "mlProcess": "formulate",
+      "title": "Potongan pizza Rina",
+      "stem": [
+        "Rina membeli pizza berbentuk lingkaran dengan jari-jari 14 cm.",
+        "Pizza dipotong menjadi beberapa bagian sama besar.",
+        "Rina mengambil satu potongan dengan sudut pusat 90°.",
+        "Berapa luas potongan pizza Rina?"
+      ],
+      "stages": [
+        {
+          "id": "s1",
+          "prompt": "Potongan pizza termasuk bagian lingkaran yang mana?",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Busur (garis lengkung)",
+            "Tali busur (garis lurus)",
+            "Juring (daerah)"
+          ],
+          "answer": "Juring (daerah)"
+        },
+        {
+          "id": "s2",
+          "prompt": "Tuliskan yang diketahui",
+          "type": "fields",
+          "score": 1,
+          "fields": [
+            {
+              "id": "r",
+              "label": "Jari-jari",
+              "unit": "cm",
+              "answer": 14
+            },
+            {
+              "id": "theta",
+              "label": "Sudut pusat",
+              "unit": "°",
+              "answer": 90
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "prompt": "Apa yang ditanyakan?",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Panjang busur",
+            "Luas juring",
+            "Keliling lingkaran"
+          ],
+          "answer": "Luas juring"
+        },
+        {
+          "id": "s4",
+          "prompt": "Rumus yang tepat",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "s = θ/360° × 2πr",
+            "L = θ/360° × πr²",
+            "K = 2πr"
+          ],
+          "answer": "L = θ/360° × πr²"
+        },
+        {
+          "id": "s5",
+          "prompt": "Substitusi nilai yang tepat",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "L = (90/360) × 2 × (22/7) × 14",
+            "L = (90/360) × (22/7) × 28²",
+            "L = (90/360) × (22/7) × 14²"
+          ],
+          "answer": "L = (90/360) × (22/7) × 14²"
+        },
+        {
+          "id": "s6",
+          "prompt": "Luas potongan pizza Rina",
+          "type": "number",
+          "unit": "cm²",
+          "score": 1,
+          "answer": 154
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "indicator": "Employing Mathematical Concepts, Facts, and Procedures",
+      "mlProcess": "employ",
+      "title": "Kolam berbentuk lingkaran",
+      "stem": [
+        "Sebuah kolam berbentuk lingkaran dengan jari-jari 21 m.",
+        "Di tepi kolam dibuat jalur melengkung dengan sudut pusat 120°.",
+        "Bagian dalam yang dibatasi dua jari-jari dan busur itu juga dihitung luasnya.",
+        "Tentukan panjang busur dan luas juring kolam."
+      ],
+      "rubricNote": "Dokumen asli: 6 tahap, skor tahap 1–4 (1+2+2+1, sama dengan contoh Tabel 1). Sementara: 1/1/2/1/1/0 (tahap 6 = kesimpulan, tidak diskor otomatis).",
+      "stages": [
+        {
+          "id": "s1",
+          "prompt": "Tuliskan yang diketahui",
+          "type": "fields",
+          "score": 1,
+          "fields": [
+            {
+              "id": "r",
+              "label": "Jari-jari",
+              "unit": "m",
+              "answer": 21
+            },
+            {
+              "id": "theta",
+              "label": "Sudut pusat",
+              "unit": "°",
+              "answer": 120
+            }
+          ]
+        },
+        {
+          "id": "s2",
+          "prompt": "Pasangan rumus yang tepat",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Busur: θ/360° × πr²; Juring: θ/360° × 2πr",
+            "Busur: θ/360° × 2πr; Juring: θ/360° × πr²",
+            "Busur: 2πr; Juring: πr²"
+          ],
+          "answer": "Busur: θ/360° × 2πr; Juring: θ/360° × πr²"
+        },
+        {
+          "id": "s3",
+          "prompt": "Panjang busur",
+          "type": "number",
+          "unit": "m",
+          "score": 2,
+          "answer": 44
+        },
+        {
+          "id": "s4",
+          "prompt": "Luas juring",
+          "type": "number",
+          "unit": "m²",
+          "score": 1,
+          "answer": 462
+        },
+        {
+          "id": "s5",
+          "prompt": "Pernyataan yang tepat",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Panjang busur 462 m dan luas juring 44 m²",
+            "Panjang busur 132 m dan luas juring 1.386 m²",
+            "Panjang busur 44 m dan luas juring 462 m²"
+          ],
+          "answer": "Panjang busur 44 m dan luas juring 462 m²"
+        },
+        {
+          "id": "s6",
+          "prompt": "Tuliskan kesimpulanmu",
+          "type": "text",
+          "score": 0
+        }
+      ]
+    },
+    {
+      "id": "T4",
+      "indicator": "Interpreting, Applying, and Evaluating Mathematical Outcomes",
+      "mlProcess": "interpret",
+      "title": "Memeriksa jawaban Doni",
+      "stem": [
+        "Doni diminta menghitung panjang busur lingkaran.",
+        "Jari-jarinya 14 cm dan sudut pusatnya 90°.",
+        "Doni memakai rumus luas juring dan mendapat 154 cm².",
+        "Apakah cara dan jawaban Doni benar?"
+      ],
+      "stages": [
+        {
+          "id": "s1",
+          "prompt": "Apa yang perlu kamu periksa lebih dulu?",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Apakah Doni menghitung 14² dengan benar",
+            "Apakah rumus Doni sesuai dengan yang ditanyakan",
+            "Apakah sudut pusatnya 90°"
+          ],
+          "answer": "Apakah rumus Doni sesuai dengan yang ditanyakan"
+        },
+        {
+          "id": "s2",
+          "prompt": "Tuliskan yang diketahui",
+          "type": "fields",
+          "score": 1,
+          "fields": [
+            {
+              "id": "r",
+              "label": "Jari-jari",
+              "unit": "cm",
+              "answer": 14
+            },
+            {
+              "id": "theta",
+              "label": "Sudut pusat",
+              "unit": "°",
+              "answer": 90
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "prompt": "Rumus panjang busur yang benar",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "L = θ/360° × πr²",
+            "s = 2πr",
+            "s = θ/360° × 2πr"
+          ],
+          "answer": "s = θ/360° × 2πr"
+        },
+        {
+          "id": "s4",
+          "prompt": "Di mana letak kesalahan Doni?",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Memakai rumus luas juring untuk mencari panjang busur",
+            "Salah menghitung 14²",
+            "Salah memakai nilai π"
+          ],
+          "answer": "Memakai rumus luas juring untuk mencari panjang busur"
+        },
+        {
+          "id": "s5",
+          "prompt": "Panjang busur yang sebenarnya",
+          "type": "number",
+          "unit": "cm",
+          "score": 1,
+          "answer": 22
+        },
+        {
+          "id": "s6",
+          "prompt": "Kesimpulan",
+          "type": "choice",
+          "score": 1,
+          "choices": [
+            "Jawaban Doni benar; 154 cm²",
+            "Jawaban Doni salah; panjang busur 154 cm",
+            "Jawaban Doni salah; panjang busur 22 cm"
+          ],
+          "answer": "Jawaban Doni salah; panjang busur 22 cm"
+        }
+      ]
+    }
+  ]
+}

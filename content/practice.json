@@ -1,0 +1,40 @@
+{
+  "$comment": "Teks Step Solver, umpan balik langkah, dan Cek Kewajaran (F02, F05, F09, F10).",
+  "steps": {
+    "asked": { "prompt": "① Apa yang ditanyakan?", "wrong": "Baca lagi kalimat terakhir soal. Yang ditanya panjang (garis) atau luas (daerah)?" },
+    "given": { "prompt": "② Apa yang diketahui?", "wrong": "Periksa lagi angka jari-jari dan sudut pusat pada soal." },
+    "fraction": { "prompt": "③ Pecahan sudut: θ/360° = …", "hint": "Tulis pecahan (1/4) atau desimal (0,25).", "wrong": "Bagi sudut pusat dengan 360°. Contoh: 90 ÷ 360 = 1/4." },
+    "formula": { "prompt": "④ Pilih rumus", "wrongArc": "Busur itu garis → bagian dari keliling → pakai 2πr.", "wrongSector": "Juring itu daerah → bagian dari luas → pakai πr²." },
+    "compute": { "prompt": "⑤ Hitung hasilnya" }
+  },
+  "askedOptions": [
+    { "value": "arcLength", "label": "Panjang busur" },
+    { "value": "sectorArea", "label": "Luas juring" },
+    { "value": "circumference", "label": "Keliling lingkaran" }
+  ],
+  "formulaOptions": [
+    { "value": "arc", "label": "θ/360° × 2πr" },
+    { "value": "sector", "label": "θ/360° × πr²" },
+    { "value": "circle", "label": "πr²" }
+  ],
+  "units": { "cm": "cm", "cm2": "cm²", "m": "m", "m2": "m²", "deg": "°", "rp": "rupiah" },
+  "highlight": {
+    "intro": "Ketuk kata atau angka yang penting.",
+    "picked": "Yang kamu tandai:",
+    "none": "Belum ada yang ditandai."
+  },
+  "sanity": {
+    "title": "Cek dulu sebelum kirim",
+    "fraction": "Sudut {theta}° = {fraction} lingkaran.",
+    "whole": "{wholeName} lingkaran = {whole} {unit}.",
+    "question": "Apakah jawabanmu {answer} {answerUnit} masuk akal?",
+    "unitAsk": "Yang ditanya {kind} → satuannya {unitWord}.",
+    "send": "Ya, kirim",
+    "recheck": "Periksa lagi"
+  },
+  "decisionLabel": "Sekarang ambil keputusan:",
+  "hintTitle": "Petunjuk {level} dari {max}",
+  "hintButton": "Petunjuk",
+  "noHintLeft": "Petunjuk habis untuk soal ini. Coba langkah demi langkah.",
+  "correctNext": "Lanjut ke soal berikutnya"
+}

@@ -1,0 +1,12 @@
+{
+  "$comment": "Diagnostik prasyarat D1–D6 (content.md §1, F03). Skor < passScore → remedial untuk butir yang salah.",
+  "passScore": 4,
+  "items": [
+    { "id": "D1", "prompt": "Garis dari titik pusat ke lingkaran disebut…", "choices": ["diameter", "jari-jari", "tali busur"], "answer": { "value": "jari-jari" }, "remedial": "R-Bagian" },
+    { "id": "D2", "prompt": "Diameter sebuah lingkaran 14 cm. Berapa jari-jarinya?", "answer": { "value": 7, "unit": "cm" }, "remedial": "R-Bagian" },
+    { "id": "D3", "prompt": "Berapa keliling lingkaran dengan r = 7 cm? (π = 22/7)", "answer": { "value": 44, "unit": "cm" }, "remedial": "R-Keliling" },
+    { "id": "D4", "prompt": "Berapa luas lingkaran dengan r = 7 cm? (π = 22/7)", "answer": { "value": 154, "unit": "cm2" }, "remedial": "R-Luas" },
+    { "id": "D5", "prompt": "Satu putaran penuh besarnya berapa derajat?", "answer": { "value": 360, "unit": "deg" }, "remedial": "R-Putaran" },
+    { "id": "D6", "prompt": "90° adalah berapa bagian dari 360°?", "choices": ["1/4", "1/2", "1/3"], "answer": { "value": "1/4" }, "remedial": "R-Pecahan" }
+  ]
+}

@@ -1,0 +1,35 @@
+.btn {
+  min-height: var(--touch);
+  min-width: var(--touch);
+  padding: 0 var(--sp-4);
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--c-sector);
+  color: var(--c-on-primary);
+}
+
+.secondary {
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  border-color: var(--c-line);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--c-ink);
+}
+
+.block {
+  width: 100%;
+}

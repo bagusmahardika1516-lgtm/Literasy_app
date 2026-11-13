@@ -1,0 +1,77 @@
+{
+  "$comment": "Prompt 'Jelaskan ke Teman' SE1–SE5 (content.md §5, F11). Urutan pilihan tetap, posisi jawaban benar sengaja bervariasi; jawaban benar ditandai correct.",
+  "prompts": {
+    "SE1": {
+      "question": "Temanmu bertanya: \"Kenapa panjang busur pakai 2πr?\"",
+      "choices": [
+        {
+          "text": "Karena hasilnya lebih kecil",
+          "correct": false
+        },
+        {
+          "text": "Karena busur bagian dari keliling",
+          "correct": true
+        },
+        {
+          "text": "Karena jari-jarinya 14",
+          "correct": false
+        }
+      ]
+    },
+    "SE2": {
+      "question": "Temanmu bertanya: \"Kenapa satuan luas juring cm²?\"",
+      "choices": [
+        {
+          "text": "Karena dikali 2",
+          "correct": false
+        },
+        {
+          "text": "Kebetulan saja",
+          "correct": false
+        },
+        {
+          "text": "Karena juring adalah daerah",
+          "correct": true
+        }
+      ]
+    },
+    "SE3": {
+      "question": "Temanmu bertanya: \"Kenapa sudutnya 45° kalau pizza dipotong 8?\"",
+      "choices": [
+        {
+          "text": "Karena pizza berbentuk bundar",
+          "correct": false
+        },
+        {
+          "text": "Karena 360° dibagi 8",
+          "correct": true
+        },
+        {
+          "text": "Karena 8 × 5 = 40",
+          "correct": false
+        }
+      ]
+    },
+    "SE4": {
+      "question": "Temanmu bertanya: \"Kenapa pagar bukan hanya panjang busur?\"",
+      "choices": [
+        {
+          "text": "Karena busur selalu lebih pendek",
+          "correct": false
+        },
+        {
+          "text": "Karena pagar harus lurus",
+          "correct": false
+        },
+        {
+          "text": "Karena tepi taman juga punya dua jari-jari",
+          "correct": true
+        }
+      ]
+    },
+    "SE5": {
+      "question": "Tulis dengan kata-katamu: apa beda busur dan juring?",
+      "freeText": true
+    }
+  }
+}

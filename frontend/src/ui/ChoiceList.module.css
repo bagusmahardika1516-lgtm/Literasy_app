@@ -1,0 +1,43 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--touch);
+  padding: var(--sp-2) var(--sp-3);
+  border: 2px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:disabled {
+  cursor: default;
+}
+
+.selected {
+  border-color: var(--c-sector);
+  font-weight: 600;
+}
+
+.correct {
+  border-color: var(--c-correct);
+}
+
+.wrong {
+  border-color: var(--c-retry);
+}
+
+.dot {
+  width: 1.2em;
+  text-align: center;
+}

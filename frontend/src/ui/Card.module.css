@@ -1,0 +1,48 @@
+/* Gaya bersama untuk kartu materi & soal */
+.card {
+  background: var(--c-surface-2);
+  border-radius: var(--radius);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-3);
+}
+
+.visual {
+  width: 100%;
+  max-width: 260px;
+  aspect-ratio: 1 / 0.95;
+  margin: 0 auto var(--sp-3);
+}
+
+.formula {
+  font-size: var(--fs-title);
+  font-weight: 700;
+  text-align: center;
+  padding: var(--sp-2) 0;
+}
+
+.formulaArc {
+  color: var(--c-arc);
+}
+
+.formulaSector {
+  color: var(--c-sector);
+}
+
+.muted {
+  color: var(--c-muted);
+  font-size: var(--fs-small);
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-4);
+}
+
+.actions > * {
+  flex: 1;
+}
+
+.stem p {
+  margin: 0 0 var(--sp-1);
+}

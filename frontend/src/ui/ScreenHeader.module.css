@@ -1,0 +1,26 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+
+.center {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-body);
+}
+
+.progress {
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.spacer {
+  width: var(--touch);
+}

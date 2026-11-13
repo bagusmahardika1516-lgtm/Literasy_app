@@ -1,0 +1,26 @@
+# Rahasia
+.env
+.env.*
+!.env.example
+
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.db
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/dev-dist/
+.vercel/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# Data penelitian & dokumentasi wawancara tidak pernah masuk repositori (privacy.md)
+data-penelitian/
+*.csv

@@ -1,0 +1,17 @@
+{
+  "$comment": "Urutan bagian belajar (content.md §8, design.md §3). kind menentukan layar yang dipakai.",
+  "sections": [
+    { "id": "pretest", "title": "Uji Awal Literasi", "kind": "mltest", "testKind": "pre", "effortRating": false },
+    { "id": "diagnostic", "title": "Cek Prasyarat", "kind": "diagnostic", "effortRating": false },
+    { "id": "explore", "title": "Eksplorasi Busur & Juring", "kind": "explore", "effortRating": true },
+    { "id": "concept", "title": "Konsep Busur & Juring", "kind": "deck", "deck": "concept", "effortRating": true },
+    { "id": "contrast", "title": "Bedakan Busur & Juring", "kind": "contrast", "effortRating": false },
+    { "id": "game", "title": "Permainan: Busur atau Juring?", "kind": "game", "effortRating": true },
+    { "id": "examples", "title": "Contoh Soal", "kind": "examples", "items": ["WE1", "WE2", "WE3", "WE4", "WE5", "WE6"], "effortRating": true },
+    { "id": "guided", "title": "Latihan Terbimbing", "kind": "practice", "support": "guided", "items": ["P01", "P02", "P03", "P04", "P05", "P06"], "effortRating": true },
+    { "id": "independent", "title": "Latihan Mandiri", "kind": "practice", "support": "independent", "items": ["P11", "P12", "P13", "P14"], "effortRating": true },
+    { "id": "literacy", "title": "Soal Kehidupan Nyata", "kind": "practice", "support": "literacy", "items": ["P07", "P08", "P09", "P10", "P15", "P16", "P17", "P18"], "effortRating": true },
+    { "id": "reflection", "title": "Jelaskan ke Teman", "kind": "reflection", "prompt": "SE5", "effortRating": false },
+    { "id": "posttest", "title": "Uji Akhir Literasi", "kind": "mltest", "testKind": "post", "effortRating": false }
+  ]
+}

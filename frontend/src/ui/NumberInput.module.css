@@ -1,0 +1,55 @@
+.field {
+  margin-bottom: var(--sp-3);
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: var(--sp-1);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--touch);
+  padding: 0 var(--sp-3);
+  border: 2px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-title);
+}
+
+.unitLabel {
+  font-weight: 600;
+  min-width: 2em;
+}
+
+.units {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.unit {
+  min-width: var(--touch);
+  min-height: var(--touch);
+  border: 2px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.unitOn {
+  border-color: var(--c-sector);
+  background: var(--c-surface);
+}

@@ -1,0 +1,17 @@
+{
+  "$comment": "Permainan 'Busur atau Juring?' (F01, IL01). Tanpa poin, timer, atau papan peringkat (agents.md G3, G10).",
+  "title": "Busur atau Juring?",
+  "intro": "Baca kartunya. Pilih: busur atau juring?",
+  "items": [
+    { "id": "G01", "text": "Panjang tali lampu hias yang melengkung di tepi meja bundar", "answer": "arc", "why": "Tali melengkung adalah garis → busur." },
+    { "id": "G02", "text": "Luas satu potongan kue bundar", "answer": "sector", "why": "Potongan kue adalah daerah → juring." },
+    { "id": "G03", "text": "Jarak yang ditempuh ujung jarum jam", "answer": "arc", "why": "Ujung jarum bergerak di sepanjang garis lengkung → busur." },
+    { "id": "G04", "text": "Daerah rumput yang tersiram penyiram berputar", "answer": "sector", "why": "Yang tersiram adalah daerah → juring." },
+    { "id": "G05", "text": "Hasil dengan satuan cm²", "answer": "sector", "why": "cm² adalah satuan luas → juring." },
+    { "id": "G06", "text": "Hasil dengan satuan cm", "answer": "arc", "why": "cm adalah satuan panjang → busur." },
+    { "id": "G07", "text": "Bagian dari keliling lingkaran", "answer": "arc", "why": "Busur adalah bagian dari keliling." },
+    { "id": "G08", "text": "Bagian dari luas lingkaran", "answer": "sector", "why": "Juring adalah bagian dari luas." },
+    { "id": "G09", "text": "Rumus θ/360° × 2πr", "answer": "arc", "why": "2πr adalah keliling → busur." },
+    { "id": "G10", "text": "Rumus θ/360° × πr²", "answer": "sector", "why": "πr² adalah luas → juring." }
+  ]
+}

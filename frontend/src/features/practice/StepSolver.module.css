@@ -1,0 +1,25 @@
+.trail {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--sp-3);
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+}
+
+.trail li {
+  padding: var(--sp-1) 0;
+  border-bottom: 1px dashed var(--c-line);
+}
+
+.prompt {
+  font-size: var(--fs-body);
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-3);
+}
+
+.actions > * {
+  flex: 1;
+}

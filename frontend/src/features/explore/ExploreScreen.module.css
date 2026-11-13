@@ -1,0 +1,84 @@
+.main {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  margin: 0;
+}
+
+.intro {
+  color: var(--c-muted);
+  margin: var(--sp-2) 0 var(--sp-3);
+}
+
+.note {
+  font-size: var(--fs-small);
+  color: var(--c-muted);
+  margin-top: var(--sp-2);
+}
+
+.readout {
+  margin: var(--sp-3) 0;
+}
+
+.readout p {
+  margin: 0 0 var(--sp-1);
+  font-weight: 600;
+}
+
+.angle {
+  color: var(--c-angle);
+}
+
+.arc {
+  color: var(--c-arc);
+}
+
+.sector {
+  color: var(--c-sector);
+}
+
+.toggle {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: var(--touch);
+}
+
+.check input {
+  width: 24px;
+  height: 24px;
+}
+
+.key {
+  padding: var(--sp-3);
+  background: var(--c-surface-2);
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-top: auto;
+  padding-top: var(--sp-4);
+}
+
+.nav > * {
+  flex: 1;
+}
