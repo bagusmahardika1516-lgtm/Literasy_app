@@ -27,6 +27,37 @@ class Student(Base):
     class_code: Mapped[str] = mapped_column(ForeignKey("classes.code"), index=True)
     group_label: Mapped[str | None] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    # Akun login (scripts/manage_accounts.py). Username bukan nama asli (privacy.md).
+    username: Mapped[str | None] = mapped_column(String(64), unique=True, index=True)
+    password_hash: Mapped[str | None] = mapped_column(String(255))  # Argon2id, tidak pernah teks asli
+    password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class LoginSession(Base):
+    """Sesi login. Satu akun hanya punya satu sesi aktif: login baru mencabut sesi lama."""
+
+    __tablename__ = "login_sessions"
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    student_code: Mapped[str] = mapped_column(ForeignKey("students.code"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)  # SHA-256 dari token
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_reason: Mapped[str | None] = mapped_column(String(16))  # logout | new_login | password_reset | disabled
+    device_label: Mapped[str | None] = mapped_column(String(64))
+
+
+class LoginAttempt(Base):
+    """Riwayat percobaan login untuk pembatasan (rate limit) — tetap berlaku walau server restart."""
+
+    __tablename__ = "login_attempts"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    username: Mapped[str] = mapped_column(String(64), index=True)
+    ip: Mapped[str | None] = mapped_column(String(64), index=True)
+    success: Mapped[bool] = mapped_column(Boolean)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, index=True)
 
 
 class LearningSession(Base):

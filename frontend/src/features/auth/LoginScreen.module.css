@@ -1,9 +1,29 @@
 .main {
-  margin-top: 15vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
-.lead {
+.visual {
+  width: 55%;
+  max-width: 200px;
+  aspect-ratio: 1 / 0.95;
+  margin: var(--sp-4) auto var(--sp-2);
+}
+
+.title {
+  text-align: center;
+  font-size: 26px;
+}
+
+.tagline {
+  text-align: center;
   color: var(--c-muted);
+  margin-bottom: var(--sp-5);
+}
+
+.form {
+  margin-bottom: var(--sp-3);
 }
 
 .field {
@@ -12,7 +32,8 @@
   font-weight: 600;
 }
 
-.field input {
+.field input,
+.passwordRow input {
   display: block;
   width: 100%;
   min-height: var(--touch);
@@ -23,10 +44,57 @@
   background: var(--c-surface);
   color: var(--c-ink);
   font: inherit;
-  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+}
+
+.passwordRow {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: stretch;
+  margin-bottom: var(--sp-4);
+}
+
+.passwordRow input {
+  flex: 1;
+  min-width: 0;
+}
+
+.toggle {
+  min-height: var(--touch);
+  margin-top: var(--sp-1);
+  padding: 0 var(--sp-3);
+  border: 2px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  color: var(--c-ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notice {
+  padding: var(--sp-3);
+  border-left: 4px solid var(--c-sector);
+  border-radius: var(--radius);
+  background: var(--c-surface-2);
+  margin-bottom: var(--sp-4);
 }
 
 .error {
   color: var(--c-retry);
   font-weight: 600;
+}
+
+.note {
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  text-align: center;
+  font-size: var(--fs-small);
+  color: var(--c-muted);
 }

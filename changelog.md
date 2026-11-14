@@ -12,6 +12,23 @@ kecil → `1.0` setelah uji lapangan & evaluasi.
 - Data informan S02 di [analysis.md](analysis.md).
 - Sprint 0 pengembangan ([task.md](task.md)).
 
+## [0.4.0] — 2026-11-14
+
+### Diubah (tidak kompatibel dengan 0.3)
+- **Login username + password** menggantikan kode siswa + kode kelas (ADR-022). Password di-hash Argon2id; sesi
+  berupa token Bearer (hanya hash-nya di database), berlaku 30 hari dan bergeser saat dipakai.
+- **Satu akun = satu perangkat aktif**: login di perangkat baru mengeluarkan perangkat lama dengan pesan alasannya.
+- Endpoint data (`/api/records`, `/api/mltest/status`, `/api/mltest/submit`) memakai identitas dari token;
+  `code`/`class_code` tidak lagi dikirim di body. `/api/mltest/status` menjadi `GET`. `/api/students/verify` dihapus.
+- Halaman Awal digabung ke halaman masuk (satu pintu masuk); `/masuk` tidak bisa dibuka saat sudah masuk.
+- Antrean catatan, progres, dan draf uji disimpan per siswa; tidak dihapus saat keluar atau saat sesi berakhir.
+
+### Ditambahkan
+- `POST /api/auth/login`, `POST /api/auth/logout`, `GET /api/auth/me`; pembatasan percobaan login (429).
+- `scripts/manage_accounts.py`: buat akun (CSV), reset password, nonaktifkan/aktifkan, daftar.
+- Penanganan 401 di frontend: token dihapus, diarahkan ke halaman masuk dengan pesan sesuai alasan.
+- Batas ukuran jawaban Uji Literasi; `DOCS_ENABLED=false` menutup `/docs` di produksi.
+
 ## [0.3.0] — 2026-11-12
 
 ### Ditambahkan

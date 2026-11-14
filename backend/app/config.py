@@ -17,6 +17,16 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
     content_dir: Path = ROOT_DIR / "content"
     create_tables_on_startup: bool = True  # matikan di produksi setelah migrasi Alembic tersedia
+    docs_enabled: bool = True  # /docs & /openapi.json — set false di produksi
+
+    # Sesi login (token Bearer acak, hanya hash-nya yang disimpan di database)
+    session_ttl_days: int = 30  # diperpanjang otomatis setiap kali dipakai
+    session_touch_seconds: int = 60  # jeda minimum memperbarui last_seen_at
+
+    # Pembatasan percobaan login (anti tebak password)
+    login_window_minutes: int = 15
+    login_max_failures_per_user: int = 5
+    login_max_failures_per_ip: int = 30
 
     @property
     def cors_origin_list(self) -> list[str]:

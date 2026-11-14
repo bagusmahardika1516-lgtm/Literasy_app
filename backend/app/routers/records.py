@@ -6,17 +6,19 @@ Idempoten: baris dengan id yang sudah ada diabaikan (antrean HP boleh mengirim u
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..auth import require_student
+from ..auth import current_student
 from ..db import get_db
-from ..models import Attempt, EffortRating, Reflection
+from ..models import Attempt, EffortRating, Reflection, Student
 from ..schemas import RecordsIn, RecordsOut
 
 router = APIRouter(prefix="/api/records", tags=["catatan belajar"])
 
 
 @router.post("", response_model=RecordsOut)
-def save_records(body: RecordsIn, db: Session = Depends(get_db)) -> RecordsOut:
-    code = require_student(db, body.code, body.class_code)
+def save_records(
+    body: RecordsIn, student: Student = Depends(current_student), db: Session = Depends(get_db)
+) -> RecordsOut:
+    code = student.code
     inserted = 0
     for model, rows in ((Attempt, body.attempts), (EffortRating, body.effort), (Reflection, body.reflections)):
         for row in rows:

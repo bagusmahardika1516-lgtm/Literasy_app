@@ -2,7 +2,7 @@
 // Tanpa petunjuk/umpan balik (agar valid sebagai instrumen). Skor dihitung di server (evaluation.md §4).
 import { useEffect, useState } from 'react';
 import { getMlTest, getMlTestStatus, submitMlTest } from '../../api/client.js';
-import { getProfile } from '../../data/profile.js';
+import { studentKey } from '../../data/profile.js';
 import { uuid } from '../../data/uuid.js';
 import Button from '../../ui/Button.jsx';
 import card from '../../ui/Card.module.css';
@@ -10,11 +10,12 @@ import Feedback from '../../ui/Feedback.jsx';
 import ScreenHeader from '../../ui/ScreenHeader.jsx';
 import MlStage from './MlStage.jsx';
 
-const DRAFT_KEY = 'literasy.mltest-draft';
+// Draf per siswa: siswa lain di HP yang sama tidak melihat/meneruskan jawaban ini
+const draftKey = () => studentKey('literasy.mltest-draft');
 
 function loadDraft(kind) {
   try {
-    const d = JSON.parse(localStorage.getItem(DRAFT_KEY) ?? 'null');
+    const d = JSON.parse(localStorage.getItem(draftKey()) ?? 'null');
     return d?.kind === kind ? d : null;
   } catch {
     return null;
@@ -23,7 +24,7 @@ function loadDraft(kind) {
 
 function saveDraft(d) {
   try {
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(d));
+    localStorage.setItem(draftKey(), JSON.stringify(d));
   } catch {
     // abaikan
   }
@@ -32,7 +33,6 @@ function saveDraft(d) {
 /** @param {{ section: { title: string, testKind: 'pre'|'post' }, onBack: () => void, onDone: () => void }} props */
 export default function MlTestScreen({ section, onBack, onDone }) {
   const kind = section.testKind;
-  const profile = getProfile();
   const [items, setItems] = useState(null);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState('');
@@ -41,14 +41,12 @@ export default function MlTestScreen({ section, onBack, onDone }) {
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
-    Promise.all([getMlTest(), getMlTestStatus(profile)])
+    Promise.all([getMlTest(), getMlTestStatus()])
       .then(([t, s]) => {
         setItems(t.items);
         setStatus(s);
       })
       .catch((e) => setError(e.message));
-    // profil tidak berubah selama layar terbuka
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function update(next) {
@@ -116,8 +114,8 @@ export default function MlTestScreen({ section, onBack, onDone }) {
     setSending(true);
     setError('');
     try {
-      await submitMlTest(profile, draft.id, kind, draft.answers);
-      localStorage.removeItem(DRAFT_KEY);
+      await submitMlTest(draft.id, kind, draft.answers);
+      localStorage.removeItem(draftKey());
       onDone();
     } catch (e) {
       setError(e.message);

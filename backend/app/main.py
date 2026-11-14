@@ -15,7 +15,7 @@ from . import models  # noqa: F401  (mendaftarkan tabel ke Base.metadata)
 from .config import get_settings
 from .content import mltest_items, problems_by_id
 from .db import Base, engine, get_db
-from .routers import mltest, practice, records, students
+from .routers import auth, mltest, practice, records
 from .schemas import HealthOut
 
 settings = get_settings()
@@ -32,9 +32,13 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title="Literasy API",
-    version="0.2.0",
+    version="0.3.0",
     description="Backend aplikasi belajar panjang busur & luas juring (data penelitian, rekap guru).",
     lifespan=lifespan,
+    # Produksi: DOCS_ENABLED=false agar /docs dan /openapi.json tidak terbuka untuk publik
+    docs_url="/docs" if settings.docs_enabled else None,
+    redoc_url="/redoc" if settings.docs_enabled else None,
+    openapi_url="/openapi.json" if settings.docs_enabled else None,
 )
 
 app.add_middleware(
@@ -44,7 +48,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-app.include_router(students.router)
+app.include_router(auth.router)
 app.include_router(practice.router)
 app.include_router(mltest.router)
 app.include_router(records.router)

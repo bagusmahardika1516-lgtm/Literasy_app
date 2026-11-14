@@ -15,13 +15,14 @@ diharapkan, dan indikator uji (pedoman wawancara bagian H). Status: **Diusulkan 
 | ADR-008 | 12-11-2026 | Tanpa auto-play, timer, dan animasi dekoratif | Diterima |
 | ADR-009 | 12-11-2026 | Soal cerita per kalimat + Tandai Info Penting | Diterima |
 | ADR-010 | 12-11-2026 | Tanpa gamifikasi poin/leaderboard | Diterima |
-| ADR-011 | 12-11-2026 | Masuk dengan kode pseudonim, tanpa nama | Diterima |
+| ADR-011 | 12-11-2026 | ~~Masuk dengan kode pseudonim, tanpa kata sandi~~ | Diganti oleh ADR-022 |
 | ADR-012 | 12-11-2026 | Konten dalam JSON terpisah dari kode | Diterima |
 | ADR-013 | 12-11-2026 | Target HP kelas menengah, pemakaian di kelas didampingi guru | Diterima |
 | ADR-014 | 12-11-2026 | Hosting PWA di Vercel | Diterima |
-| ADR-015 | 12-11-2026 | Rekap guru sederhana (F15) | Diterima |
+| ADR-015 | 12-11-2026 | ~~Rekap guru sederhana (F15)~~ | Ditunda (target: hanya untuk siswa) |
 | ADR-016 | 12-11-2026 | Tanpa narasi audio | Diterima |
 | ADR-017 | 12-11-2026 | Backend Python FastAPI + PostgreSQL | Diterima |
+| ADR-022 | 14-11-2026 | Login username + password, sesi token, satu perangkat aktif | Diterima |
 | ADR-018 | 12-11-2026 | Frontend JavaScript (bukan TypeScript) | Diterima |
 | ADR-019 | 12-11-2026 | Engine rumus ganda (Python & JS) diuji dengan konten yang sama | Diterima |
 | ADR-020 | 12-11-2026 | Soal Tabel 2 docx = Uji Literasi pre/post, diskor per tahap di server | Diterima (rubrik T1/T3 menunggu konfirmasi) |
@@ -170,6 +171,26 @@ diharapkan, dan indikator uji (pedoman wawancara bagian H). Status: **Diusulkan 
 - **Keputusan:** kartu klasifikasi busur vs juring dengan alasan setiap jawaban; kartu yang salah diulang di akhir;
   hanya ditampilkan "x/10 kartu tepat" — tanpa poin, timer, papan peringkat, animasi hadiah.
 - **Indikator:** jumlah kartu yang perlu diulang menurun; ≥ 80% benar item "pilih rumus" (G3).
+
+### ADR-022 — Login username + password, sesi token, satu perangkat aktif
+- **Tanggal / status:** 14-11-2026 / Diterima. Menggantikan ADR-011 (bagian "tanpa kata sandi").
+- **Bukti temuan:** audit 14-11-2026 (AUDIT_LITERASY.md temuan #4–#5): kode `S01` mudah ditebak dan kode kelas
+  dibagikan ke seluruh kelas, sehingga siapa pun bisa menulis data atas nama siswa lain; `/masuk` bisa dibuka saat
+  sudah masuk.
+- **Keputusan:**
+  - Username pseudonim (`<kelas>-<kode>`, mis. `8a-2026-s01`) + password acak 10 karakter dari skrip
+    `scripts/manage_accounts.py`. Tetap tanpa nama/email/foto.
+  - Password di-hash **Argon2id** (`argon2-cffi`); token sesi 32 byte acak, database hanya menyimpan SHA-256-nya.
+  - Token dikirim lewat header `Authorization: Bearer` (bukan cookie: frontend dan backend beda domain), disimpan di
+    localStorage sehingga siswa tetap masuk setelah browser ditutup. Masa berlaku 30 hari, bergeser saat dipakai.
+  - **Satu perangkat aktif:** login baru mencabut sesi lain akun itu; perangkat lama menerima 401
+    `session_replaced` dan menampilkan alasannya.
+  - Pembatasan percobaan: 5 gagal per username / 30 per IP dalam 15 menit → 429.
+  - Antrean catatan & draf uji disimpan per siswa dan tidak dihapus saat keluar atau sesi berakhir.
+- **Alternatif:** cookie httpOnly (ditolak: cookie pihak ketiga sering diblokir lintas domain); JWT tanpa tabel
+  sesi (ditolak: tidak bisa dicabut untuk aturan satu perangkat).
+- **Konsekuensi/risiko:** lupa password hanya bisa direset lewat skrip oleh peneliti; token di localStorage rentan
+  bila ada XSS (aplikasi tidak memakai `innerHTML`).
 
 ---
 

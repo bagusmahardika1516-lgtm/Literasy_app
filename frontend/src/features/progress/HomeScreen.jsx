@@ -1,30 +1,47 @@
 // Beranda / jalur belajar (design.md §4.1). Semua bagian bisa dibuka; yang disarankan ditandai ●.
 import sequence from '@content/sequence.json';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { clearAll, getProfile, getProgress } from '../../data/profile.js';
+import { getProgress } from '../../data/profile.js';
+import { flush, pendingCount } from '../../data/records.js';
 import Button from '../../ui/Button.jsx';
+import { useAuth } from '../auth/AuthProvider.jsx';
 import styles from './HomeScreen.module.css';
 import UpdatePrompt from './UpdatePrompt.jsx';
 
 export default function HomeScreen() {
   const navigate = useNavigate();
-  const profile = getProfile();
+  const { student, logout } = useAuth();
+  const [leaving, setLeaving] = useState(false);
   const progress = getProgress();
   const sections = sequence.sections;
   const doneCount = sections.filter((s) => progress[s.id] === 'done').length;
   const next = sections.find((s) => progress[s.id] !== 'done');
 
-  function logout() {
-    clearAll();
-    navigate('/', { replace: true });
+  async function onLogout() {
+    setLeaving(true);
+    await flush(); // coba kirim catatan yang tertunda dulu
+    const pending = pendingCount();
+    if (
+      pending > 0 &&
+      !window.confirm(
+        `Ada ${pending} catatan belajar yang belum terkirim karena belum tersambung ke server.\n\n` +
+          'Catatan itu tetap tersimpan di HP ini dan terkirim otomatis saat kamu masuk lagi di HP ini.\n\n' +
+          'Tetap keluar?',
+      )
+    ) {
+      setLeaving(false);
+      return;
+    }
+    await logout(); // RequireAuth lalu mengarahkan ke halaman masuk
   }
 
   return (
     <main>
       <header className={styles.header}>
-        <span>Halo, {profile?.code}</span>
-        <Button variant="ghost" onClick={logout}>
-          Keluar
+        <span>Halo, {student?.username || student?.code}</span>
+        <Button variant="ghost" onClick={onLogout} disabled={leaving}>
+          {leaving ? 'Keluar…' : 'Keluar'}
         </Button>
       </header>
 

@@ -1,79 +1,96 @@
-// Masuk dengan kode siswa + kode kelas (FR-01, ADR-011). Tanpa nama, tanpa kata sandi.
+// Satu-satunya pintu masuk: perkenalan singkat + form username & password (pengganti Halaman Awal).
+import text from '@content/welcome.json';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { verifyStudent } from '../../api/client.js';
-import { saveProfile } from '../../data/profile.js';
+import SvgSector from '../../scenes/svg/SvgSector.jsx';
 import Button from '../../ui/Button.jsx';
+import { useAuth } from './AuthProvider.jsx';
 import styles from './LoginScreen.module.css';
 
 export default function LoginScreen() {
-  const navigate = useNavigate();
-  const [code, setCode] = useState('');
-  const [classCode, setClassCode] = useState('');
+  const { login, notice } = useAuth();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e) {
     e.preventDefault();
-    const c = code.trim().toUpperCase();
-    const k = classCode.trim().toUpperCase();
-    if (!/^S\d{2,3}$/.test(c)) {
-      setError('Kode siswa diawali huruf S lalu angka, contoh S01.');
-      return;
-    }
+    const u = username.trim().toLowerCase();
+    if (!u || !password) return;
     setBusy(true);
     setError('');
     try {
-      if (await verifyStudent(c, k)) {
-        saveProfile({ code: c, classCode: k });
-        navigate('/', { replace: true });
-      } else {
-        setError('Kode siswa atau kode kelas tidak cocok. Tanyakan kepada gurumu.');
-      }
+      await login(u, password); // berhasil → GuestOnly mengarahkan ke beranda
     } catch (err) {
       setError(err.message);
-    } finally {
+      setPassword('');
       setBusy(false);
     }
   }
 
   return (
     <main className={styles.main}>
-      <h1>Busur & Juring</h1>
-      <p className={styles.lead}>Masukkan kode dari gurumu.</p>
-      <form onSubmit={onSubmit} noValidate>
+      <div className={styles.visual} aria-hidden="true">
+        <SvgSector angle={90} radius={14} highlight="both" />
+      </div>
+      <h1 className={styles.title}>{text.title}</h1>
+      <p className={styles.tagline}>{text.tagline}</p>
+
+      {notice && !error && (
+        <p role="status" className={styles.notice}>
+          {notice}
+        </p>
+      )}
+
+      <form onSubmit={onSubmit} noValidate className={styles.form}>
         <label className={styles.field}>
-          Kode siswa
+          Username
           <input
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="S01"
-            autoCapitalize="characters"
-            autoComplete="off"
-            inputMode="text"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="contoh: 8a-2026-s01"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            autoComplete="username"
             required
           />
         </label>
-        <label className={styles.field}>
-          Kode kelas
+        <label className={styles.label} htmlFor="password">
+          Password
+        </label>
+        <div className={styles.passwordRow}>
           <input
-            value={classCode}
-            onChange={(e) => setClassCode(e.target.value)}
-            placeholder="8A-2026"
-            autoCapitalize="characters"
-            autoComplete="off"
+            id="password"
+            name="password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
             required
           />
-        </label>
+          <button
+            type="button"
+            className={styles.toggle}
+            aria-pressed={showPassword}
+            aria-controls="password"
+            onClick={() => setShowPassword((v) => !v)}
+          >
+            {showPassword ? 'Sembunyikan' : 'Lihat'}
+          </button>
+        </div>
         {error && (
           <p role="alert" className={styles.error}>
             {error}
           </p>
         )}
-        <Button type="submit" variant="primary" block disabled={busy || !code || !classCode}>
+        <Button type="submit" variant="primary" block disabled={busy || !username.trim() || !password}>
           {busy ? 'Memeriksa…' : 'Masuk'}
         </Button>
       </form>
+      <p className={styles.note}>{text.note}</p>
     </main>
   );
 }

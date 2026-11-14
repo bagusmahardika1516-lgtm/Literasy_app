@@ -1,22 +1,18 @@
 """Skema request/response (Pydantic v2)."""
 
+from __future__ import annotations
+
+import json
 import uuid
 from datetime import datetime
-from typing import Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
-STUDENT_CODE_PATTERN = r"^S\d{2,3}$"
-CLASS_CODE_PATTERN = r"^[0-9A-Za-z][0-9A-Za-z-]{1,31}$"
+if TYPE_CHECKING:
+    from .models import Student
 
-
-class VerifyStudentIn(BaseModel):
-    code: str = Field(pattern=STUDENT_CODE_PATTERN, examples=["S01"])
-    class_code: str = Field(pattern=CLASS_CODE_PATTERN, examples=["8A-2026"])
-
-
-class VerifyStudentOut(BaseModel):
-    valid: bool
+MLTEST_ANSWERS_MAX_BYTES = 20_000  # jawaban 4 soal x beberapa tahap; jauh di atas kebutuhan wajar
 
 
 class HealthOut(BaseModel):
@@ -26,7 +22,7 @@ class HealthOut(BaseModel):
 
 
 class CheckAnswerIn(BaseModel):
-    problem_id: str
+    problem_id: str = Field(max_length=16)
     value: str = Field(max_length=32)
     unit: str | None = Field(default=None, max_length=8)
 
@@ -38,19 +34,42 @@ class CheckAnswerOut(BaseModel):
     misconception_id: str | None = None
 
 
-class StudentAuth(BaseModel):
-    """Setiap kiriman data membawa kode siswa + kode kelas (diverifikasi ulang di server)."""
+# --- Login -----------------------------------------------------------------
 
-    code: str = Field(pattern=STUDENT_CODE_PATTERN)
-    class_code: str = Field(pattern=CLASS_CODE_PATTERN)
+class LoginIn(BaseModel):
+    username: str = Field(min_length=1, max_length=64, examples=["8a-s01"])
+    password: str = Field(min_length=1, max_length=128)
+
+
+class MeOut(BaseModel):
+    code: str
+    class_code: str
+    username: str
+
+    @classmethod
+    def of(cls, student: Student) -> MeOut:
+        return cls(code=student.code, class_code=student.class_code, username=student.username or "")
+
+
+class LoginOut(BaseModel):
+    token: str
+    expires_at: datetime
+    student: MeOut
 
 
 # --- Uji Literasi ----------------------------------------------------------
 
-class MlTestSubmitIn(StudentAuth):
+class MlTestSubmitIn(BaseModel):
     submission_id: uuid.UUID
     kind: Literal["pre", "post"]
-    answers: dict[str, dict[str, Any]]  # {item_id: {stage_id: jawaban}}
+    answers: dict[str, dict[str, Any]] = Field(max_length=20)  # {item_id: {stage_id: jawaban}}
+
+    @field_validator("answers")
+    @classmethod
+    def _limit_size(cls, v: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+        if len(json.dumps(v, ensure_ascii=False)) > MLTEST_ANSWERS_MAX_BYTES:
+            raise ValueError("Jawaban terlalu panjang")
+        return v
 
 
 class MlTestSubmitOut(BaseModel):
@@ -93,7 +112,7 @@ class ReflectionIn(BaseModel):
     created_at: datetime
 
 
-class RecordsIn(StudentAuth):
+class RecordsIn(BaseModel):
     attempts: list[AttemptIn] = Field(default_factory=list, max_length=200)
     effort: list[EffortIn] = Field(default_factory=list, max_length=50)
     reflections: list[ReflectionIn] = Field(default_factory=list, max_length=50)

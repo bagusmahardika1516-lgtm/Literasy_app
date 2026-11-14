@@ -18,6 +18,8 @@ Wawancara: rekaman hanya dengan izin; transkrip memakai kode informan.
 | Data | Dikumpulkan? | Alasan |
 |---|---|---|
 | Kode siswa (S01) & kode kelas | Ya | Mengaitkan data pre/post dan log |
+| Username pseudonim & hash password (Argon2id) | Ya | Masuk aman (ADR-022). Password asli tidak pernah disimpan |
+| Sesi login (hash token, waktu, user-agent ≤ 64 karakter) | Ya | Satu perangkat aktif & pencabutan sesi |
 | Jawaban, langkah, petunjuk, durasi | Ya | Evaluasi fitur & pembelajaran |
 | Skala usaha, kuesioner, refleksi | Ya | Pengukuran beban kognitif & pemahaman |
 | Kelas perangkat (low/mid/high) & versi aplikasi | Ya | Analisis performa |
@@ -40,7 +42,9 @@ aplikasi, Supabase, maupun prompt AI.
 ## 4. Retensi dan penghapusan
 - Data penelitian disimpan selama masa penelitian + maksimal 2 tahun untuk keperluan publikasi, lalu dihapus.
 - Siswa/orang tua dapat meminta penghapusan data kode tertentu kapan saja melalui guru/peneliti.
-- Di aplikasi: menu Pengaturan → "Keluar & hapus data di HP ini" (penting karena HP dapat dipinjam bergantian di kelas).
+- Di aplikasi: tombol **Keluar** mencabut sesi dan menghapus token di HP ini (penting karena HP dapat dipinjam bergantian
+  di kelas). Catatan yang belum terkirim tetap tersimpan per siswa dan hanya terkirim atas nama siswa itu setelah
+  ia masuk lagi; siswa lain di HP yang sama tidak bisa melihat atau mengirimnya.
 - Guru hanya melihat rekap kelasnya sendiri dan tidak dapat mengunduh data mentah.
 
 ## 5. Larangan untuk tim & AI agent

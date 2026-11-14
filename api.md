@@ -221,21 +221,27 @@ export function watchFps(handle: SceneHandle, minFps: number, onLow: () => void)
 
 ### 4.0 Endpoint FastAPI
 
-Dokumentasi interaktif otomatis: `http://127.0.0.1:8000/docs`.
+Dokumentasi interaktif otomatis: `http://127.0.0.1:8000/docs` (matikan di produksi dengan `DOCS_ENABLED=false`).
+
+🔒 = wajib header `Authorization: Bearer <token>` dari `/api/auth/login`. Identitas siswa diambil dari token, bukan
+dari body. Sesi tidak valid → **401** dengan `detail.code`: `not_authenticated`, `invalid_token`,
+`session_replaced` (akun masuk di perangkat lain), `session_expired`, `session_revoked` (password direset),
+`account_disabled`. Sesi berlaku 30 hari dan diperpanjang setiap kali dipakai. Akun dikelola dengan
+`python -m scripts.manage_accounts` (tidak ada dashboard guru).
 
 | Metode | Path | Fungsi | Status |
 |---|---|---|---|
 | `GET` | `/api/health` | Status server, database, jumlah soal termuat | ✅ v0.2.0 |
-| `POST` | `/api/students/verify` `{code, class_code}` → `{valid}` | Masuk siswa (FR-01) | ✅ v0.2.0 |
+| `POST` | `/api/auth/login` `{username, password}` → `{token, expires_at, student}` | Masuk siswa. Mencabut sesi lain akun ini (satu perangkat aktif). 401 `invalid_credentials`, 429 `too_many_attempts` | ✅ v0.4.0 |
+| `POST` | `/api/auth/logout` 🔒 → 204 | Mencabut sesi yang sedang dipakai | ✅ v0.4.0 |
+| `GET` | `/api/auth/me` 🔒 → `{code, class_code, username}` | Siswa yang sedang masuk | ✅ v0.4.0 |
 | `POST` | `/api/practice/check` `{problem_id, value, unit?}` → `{correct, unit_ok, feedback, misconception_id}` | Pemeriksaan jawaban di server | ✅ v0.2.0 |
 | `GET` | `/api/mltest` | Soal Uji Literasi T1–T4 **tanpa kunci & skor** | ✅ v0.3.0 |
-| `POST` | `/api/mltest/status` `{code, class_code}` → `{pre_done, post_done}` | Cek uji sudah dikerjakan | ✅ v0.3.0 |
-| `POST` | `/api/mltest/submit` `{code, class_code, submission_id, kind, answers}` → `{saved_items}` | Simpan & skor per tahap (idempoten) | ✅ v0.3.0 |
-| `POST` | `/api/records` `{code, class_code, attempts[], effort[], reflections[]}` → `{inserted}` | Catatan belajar (idempoten, id UUID) | ✅ v0.3.0 |
+| `GET` | `/api/mltest/status` 🔒 → `{pre_done, post_done}` | Cek uji sudah dikerjakan | ✅ v0.4.0 |
+| `POST` | `/api/mltest/submit` 🔒 `{submission_id, kind, answers}` → `{saved_items}` | Simpan & skor per tahap (idempoten) | ✅ v0.4.0 |
+| `POST` | `/api/records` 🔒 `{attempts[], effort[], reflections[]}` → `{inserted}` | Catatan belajar (idempoten, id UUID) | ✅ v0.4.0 |
 | `POST` | `/api/sessions` | Membuat sesi | Sprint 5 |
 | `POST` | `/api/students/progress` `{code, class_code}` | Progres milik sendiri (pindah HP) | Sprint 5 |
-| `POST` | `/api/teacher/login` | Login guru (token) | Sprint 5 |
-| `GET` | `/api/teacher/classes/{class_code}/recap` | Rekap guru F15 (hanya kelas yang diampu) | Sprint 5 |
 | `GET` | `/api/research/export/{kind}.csv` | Ekspor CSV peneliti (role peneliti) | Sprint 5 |
 
 ### 4.1 Tabel

@@ -10,12 +10,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..auth import require_student
+from ..auth import current_student
 from ..content import mltest_items
 from ..db import get_db
 from ..engine.mltest import public_items, score_item
-from ..models import MlTest
-from ..schemas import MlTestStatusOut, MlTestSubmitIn, MlTestSubmitOut, StudentAuth
+from ..models import MlTest, Student
+from ..schemas import MlTestStatusOut, MlTestSubmitIn, MlTestSubmitOut
 
 router = APIRouter(prefix="/api/mltest", tags=["uji literasi"])
 
@@ -25,16 +25,17 @@ def get_items() -> dict[str, Any]:
     return {"items": public_items(mltest_items())}
 
 
-@router.post("/status", response_model=MlTestStatusOut)
-def status(body: StudentAuth, db: Session = Depends(get_db)) -> MlTestStatusOut:
-    code = require_student(db, body.code, body.class_code)
-    kinds = set(db.scalars(select(MlTest.kind).where(MlTest.student_code == code)).all())
+@router.get("/status", response_model=MlTestStatusOut)
+def status(student: Student = Depends(current_student), db: Session = Depends(get_db)) -> MlTestStatusOut:
+    kinds = set(db.scalars(select(MlTest.kind).where(MlTest.student_code == student.code)).all())
     return MlTestStatusOut(pre_done="pre" in kinds, post_done="post" in kinds)
 
 
 @router.post("/submit", response_model=MlTestSubmitOut)
-def submit(body: MlTestSubmitIn, db: Session = Depends(get_db)) -> MlTestSubmitOut:
-    code = require_student(db, body.code, body.class_code)
+def submit(
+    body: MlTestSubmitIn, student: Student = Depends(current_student), db: Session = Depends(get_db)
+) -> MlTestSubmitOut:
+    code = student.code
     items = {i["id"]: i for i in mltest_items()}
     unknown = set(body.answers) - set(items)
     if unknown:

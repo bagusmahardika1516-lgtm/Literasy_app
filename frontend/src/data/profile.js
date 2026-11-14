@@ -1,6 +1,7 @@
-// Profil & progres sederhana di localStorage (Sprint 0). Diganti Dexie + antrean sinkronisasi di Sprint 5.
-// Hanya kode pseudonim yang disimpan (privacy.md).
-const KEY_PROFILE = 'literasy.profile';
+// Siswa yang sedang masuk + progres per bagian (localStorage, terpisah per siswa).
+// Hanya kode pseudonim yang disimpan (privacy.md). Progres online menyusul (poin skor per sesi).
+import { getSession } from './session.js';
+
 const KEY_PROGRESS = 'literasy.progress';
 
 function read(key, fallback) {
@@ -20,23 +21,41 @@ function write(key, value) {
   }
 }
 
-/** @returns {{ code: string, classCode: string } | null} */
-export const getProfile = () => read(KEY_PROFILE, null);
-export const saveProfile = (profile) => write(KEY_PROFILE, profile);
+/** @returns {import('./session.js').Student | null} */
+export const getProfile = () => getSession()?.student ?? null;
 
-/** @returns {Record<string, 'done'>} */
-export const getProgress = () => read(KEY_PROGRESS, {});
-export function markDone(sectionId) {
-  write(KEY_PROGRESS, { ...getProgress(), [sectionId]: 'done' });
+/** Kunci localStorage milik siswa yang sedang masuk, mis. "literasy.queue.S01". */
+export function studentKey(base, code = getProfile()?.code) {
+  return code ? `${base}.${code}` : null;
 }
 
-/** "Keluar & hapus data di HP ini" (privacy.md §4). */
-export function clearAll() {
+/** @returns {Record<string, 'done'>} */
+export const getProgress = () => {
+  const key = studentKey(KEY_PROGRESS);
+  return key ? read(key, {}) : {};
+};
+
+export function markDone(sectionId) {
+  const key = studentKey(KEY_PROGRESS);
+  if (key) write(key, { ...getProgress(), [sectionId]: 'done' });
+}
+
+/**
+ * Versi lama menyimpan profil/progres/antrean/draf tanpa kode siswa. Saat siswa yang sama masuk lagi,
+ * pindahkan datanya ke kunci miliknya agar tidak hilang. Data milik siswa lain dibiarkan (tidak dikirim).
+ */
+export function migrateLegacy(code) {
   try {
-    localStorage.removeItem(KEY_PROFILE);
-    localStorage.removeItem(KEY_PROGRESS);
-    localStorage.removeItem('literasy.queue');
-    localStorage.removeItem('literasy.mltest-draft');
+    const legacy = JSON.parse(localStorage.getItem('literasy.profile') ?? 'null');
+    if (legacy?.code !== code) return;
+    for (const base of [KEY_PROGRESS, 'literasy.queue', 'literasy.mltest-draft']) {
+      const raw = localStorage.getItem(base);
+      if (raw !== null && localStorage.getItem(`${base}.${code}`) === null) {
+        localStorage.setItem(`${base}.${code}`, raw);
+      }
+      localStorage.removeItem(base);
+    }
+    localStorage.removeItem('literasy.profile');
   } catch {
     // abaikan
   }

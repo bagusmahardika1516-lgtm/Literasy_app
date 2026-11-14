@@ -77,7 +77,8 @@ cd backend
 python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements-dev.txt     # macOS/Linux: .venv/bin/python
 copy .env.example .env                                           # macOS/Linux: cp
-.venv/Scripts/python -m scripts.seed --class DEMO --students 3   # buat kode S01–S03 kelas DEMO
+.venv/Scripts/python -m scripts.seed --class DEMO --students 3   # akun demo-s01..s03, password tampil sekali
+# Kelas sungguhan: python -m scripts.manage_accounts create --class 8A-2026 --students 32 --out akun-8a.csv
 .venv/Scripts/python -m uvicorn app.main:app --reload --host 0.0.0.0
 # Dokumentasi API: http://127.0.0.1:8000/docs
 ```
@@ -104,7 +105,7 @@ cd frontend && npm run lint && npm run test
 ```
 
 **Pemakaian:** di kelas, didampingi guru, 2–3 pertemuan × 40 menit. Siswa membuka tautan, masuk dengan
-kode siswa + kode kelas. HP target: Android 11+ kelas menengah (RAM 4–6 GB), Chrome terbaru.
+username + password (sesi token, satu perangkat aktif). HP target: Android 11+ kelas menengah (RAM 4–6 GB), Chrome terbaru.
 
 ## Indeks dokumen
 
