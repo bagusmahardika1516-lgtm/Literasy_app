@@ -26,8 +26,18 @@
   --sp-6: 32px;
 
   --radius: 12px;
+  --radius-lg: 18px;
   --touch: 48px;
   --content-max: 560px;
+  --fs-display: 32px;
+
+  /* Kedalaman & gerak — bukan warna semantik baru (G2) */
+  --shadow-1: 0 1px 2px rgb(16 24 40 / 0.06), 0 1px 3px rgb(16 24 40 / 0.08);
+  --shadow-2: 0 8px 24px rgb(16 24 40 / 0.12);
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  /* Tint turunan warna juring untuk latar penanda (bukan warna baru) */
+  --c-sector-tint: color-mix(in srgb, var(--c-sector) 10%, var(--c-surface));
+  --c-correct-tint: color-mix(in srgb, var(--c-correct) 10%, var(--c-surface));
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,5 +54,7 @@
     --c-correct: #3fb950;
     --c-retry: #db8a3a;
     --c-on-primary: #121417;
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-2: 0 8px 24px rgb(0 0 0 / 0.5);
   }
 }

@@ -1,7 +1,8 @@
 /* Gaya bersama untuk kartu materi & soal */
 .card {
   background: var(--c-surface-2);
-  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--c-line) 60%, transparent);
+  border-radius: var(--radius-lg);
   padding: var(--sp-4);
   margin-bottom: var(--sp-3);
 }

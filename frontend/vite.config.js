@@ -45,7 +45,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Three.js dipisah agar unduhan awal kecil (prd.md NFR-03)
-        manualChunks: { three: ['three'] },
+        // Bentuk fungsi: Vite 8 (Rolldown) tidak menerima bentuk objek; tetap valid di Rollup (Vite 5)
+        manualChunks: (id) => (id.includes('node_modules/three/') ? 'three' : undefined),
       },
     },
   },

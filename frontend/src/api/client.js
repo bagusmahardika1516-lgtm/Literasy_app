@@ -70,6 +70,7 @@ async function request(method, path, body, { auth = true, notifyUnauthorized = t
     if (auth && notifyUnauthorized) handleUnauthorized(code);
     throw new ApiError(messageFor(code), 401, code);
   }
+  if (res.status === 409) throw new ApiError(typeof detail === 'string' ? detail : 'Data ini sudah ada.', 409);
   if (res.status === 429) throw new ApiError(messageFor('too_many_attempts'), 429, code);
   if (res.status === 422) throw new ApiError('Format data belum benar.', 422);
   throw new ApiError('Server sedang bermasalah. Coba lagi sebentar.', res.status);
@@ -97,3 +98,6 @@ export const getMlTestStatus = () => request('GET', '/api/mltest/status');
 
 export const submitMlTest = (submissionId, kind, answers) =>
   request('POST', '/api/mltest/submit', { submission_id: submissionId, kind, answers });
+
+/** Progres & skor per bagian milik siswa yang masuk. */
+export const getProgress = () => request('GET', '/api/progress');

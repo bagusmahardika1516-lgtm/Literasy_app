@@ -1,9 +1,12 @@
-// Memilih layar sesuai `kind` bagian di content/sequence.json, lalu skala usaha → tandai selesai → beranda.
+// Memilih layar sesuai `kind` bagian di content/sequence.json.
+// Alur: kerjakan → hasil (skor per sesi, dicatat ke server) → skala usaha → beranda.
 import sequence from '@content/sequence.json';
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useRef, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { markDone } from '../../data/profile.js';
+import { recordResult } from '../../data/records.js';
 import EffortRating from '../effort/EffortRating.jsx';
+import ResultScreen from '../result/ResultScreen.jsx';
 
 const SCREENS = {
   mltest: lazy(() => import('../mltest/MlTestScreen.jsx')),
@@ -17,27 +20,73 @@ const SCREENS = {
   reflection: lazy(() => import('../reflection/ReflectionScreen.jsx')),
 };
 
+/**
+ * Layar bagian memanggil onDone(hasil?) — hasil berupa { score, maxScore, details }.
+ * Beberapa layar memasang onDone langsung ke onClick, jadi argumen lain (event) diabaikan.
+ */
+function toScore(raw) {
+  if (raw && typeof raw === 'object' && 'maxScore' in raw && Number.isFinite(raw.maxScore) && raw.maxScore > 0) {
+    return { score: raw.score, maxScore: raw.maxScore, details: raw.details ?? {} };
+  }
+  return { score: null, maxScore: null, details: raw?.details ?? {} };
+}
+
 export default function SectionScreen() {
   const { sectionId } = useParams();
   const navigate = useNavigate();
-  const [phase, setPhase] = useState('work');
+  const [phase, setPhase] = useState('work'); // work → result → effort
+  const [run, setRun] = useState(0); // naik saat "Ulangi bagian ini" → layar di-reset
+  const [result, setResult] = useState(null);
+  const startedAt = useRef(new Date().toISOString());
   const section = sequence.sections.find((s) => s.id === sectionId);
   if (!section) return <Navigate to="/" replace />;
 
   const Screen = SCREENS[section.kind];
   const home = () => navigate('/');
+  const isTest = section.kind === 'mltest';
 
-  function finish() {
+  function finish(raw) {
+    const s = toScore(raw);
+    const completedAt = new Date().toISOString();
     markDone(section.id);
-    if (section.effortRating) setPhase('effort');
-    else home();
+    // Uji Literasi sudah tersimpan & diskor di server lewat /api/mltest/submit
+    const row = isTest
+      ? null
+      : recordResult({
+          section_id: section.id,
+          score: s.score,
+          max_score: s.maxScore,
+          details: s.details,
+          started_at: startedAt.current,
+          completed_at: completedAt,
+        });
+    setResult({ ...s, startedAt: startedAt.current, completedAt, recordId: row?.id, serverSaved: isTest });
+    setPhase('result');
+  }
+
+  function retry() {
+    startedAt.current = new Date().toISOString();
+    setResult(null);
+    setRun((n) => n + 1);
+    setPhase('work');
   }
 
   if (phase === 'effort') return <EffortRating sectionId={section.id} onDone={home} />;
+  if (phase === 'result') {
+    return (
+      <ResultScreen
+        section={section}
+        result={result}
+        continueLabel={section.effortRating ? 'Lanjut →' : 'Kembali ke beranda'}
+        onContinue={section.effortRating ? () => setPhase('effort') : home}
+        onRetry={retry}
+      />
+    );
+  }
   return (
     <Suspense fallback={<p>Memuat…</p>}>
-      {/* key: membuka bagian lain me-reset seluruh state layar */}
-      <Screen key={section.id} section={section} onBack={home} onDone={finish} />
+      {/* key: membuka bagian lain / mengulang me-reset seluruh state layar */}
+      <Screen key={`${section.id}-${run}`} section={section} onBack={home} onDone={finish} />
     </Suspense>
   );
 }

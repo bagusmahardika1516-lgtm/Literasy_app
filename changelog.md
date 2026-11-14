@@ -12,6 +12,27 @@ kecil → `1.0` setelah uji lapangan & evaluasi.
 - Data informan S02 di [analysis.md](analysis.md).
 - Sprint 0 pengembangan ([task.md](task.md)).
 
+## [0.5.0] — 2026-11-14
+
+### Ditambahkan
+- **Skor akhir per bagian tersimpan di server**: tabel `section_results`, `results[]` di `POST /api/records`,
+  `GET /api/progress`. Latihan = benar di percobaan pertama (+ jumlah petunjuk), diagnostik = jawaban benar,
+  permainan = kartu tepat pada pilihan pertama, bagian materi = selesai.
+- **Halaman hasil** setelah setiap bagian: cincin skor, petunjuk, waktu, status "Hasil tersimpan" / "terkirim
+  otomatis saat tersambung", tombol Ulangi bagian.
+- Uji Literasi: skor dikembalikan setelah dikirim dan ditampilkan saat dibuka lagi; kiriman kedua → 409.
+- Beranda membaca progres dari server (cache untuk offline), menampilkan skor tiap bagian dan ringkasan
+  Uji Awal vs Uji Akhir.
+
+### Diubah
+- Desain: token kedalaman/gerak (bayangan, radius, easing, tint turunan warna juring), tombol dengan efek tekan,
+  kartu, beranda berbentuk kartu bernomor, halaman masuk berkartu, dialog konfirmasi keluar (pengganti
+  `window.confirm`). Warna busur/juring/sudut tetap; mode gelap & `prefers-reduced-motion` dihormati.
+- Antrean catatan dikirim bertahap (≤ 100 jawaban per kiriman) agar antrean panjang tidak ditolak server.
+
+### Diperbaiki
+- Build produksi gagal di Vite 8 (`manualChunks` bentuk objek) → bentuk fungsi.
+
 ## [0.4.0] — 2026-11-14
 
 ### Diubah (tidak kompatibel dengan 0.3)

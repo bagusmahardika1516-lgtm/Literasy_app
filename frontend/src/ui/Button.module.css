@@ -1,4 +1,8 @@
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
   min-height: var(--touch);
   min-width: var(--touch);
   padding: 0 var(--sp-4);
@@ -6,7 +10,18 @@
   border: 2px solid transparent;
   font: inherit;
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 120ms var(--ease),
+    background-color 160ms var(--ease),
+    box-shadow 160ms var(--ease),
+    filter 160ms var(--ease);
+}
+
+.btn:not(:disabled):active {
+  transform: scale(0.98);
 }
 
 .btn:disabled {
@@ -17,12 +32,21 @@
 .primary {
   background: var(--c-sector);
   color: var(--c-on-primary);
+  box-shadow: var(--shadow-1);
+}
+
+.primary:not(:disabled):hover {
+  filter: brightness(1.07);
 }
 
 .secondary {
-  background: var(--c-surface-2);
+  background: var(--c-surface);
   color: var(--c-ink);
   border-color: var(--c-line);
+}
+
+.secondary:not(:disabled):hover {
+  background: var(--c-surface-2);
 }
 
 .ghost {
@@ -30,6 +54,11 @@
   color: var(--c-ink);
 }
 
+.ghost:not(:disabled):hover {
+  background: var(--c-surface-2);
+}
+
 .block {
+  display: flex;
   width: 100%;
 }

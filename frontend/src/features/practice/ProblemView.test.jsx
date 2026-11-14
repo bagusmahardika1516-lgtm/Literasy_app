@@ -47,7 +47,7 @@ describe('Latihan terbimbing (Step Solver) P01', () => {
     click('Kirim penjelasan');
     click('Lanjut →');
     click(/Lanjut ke soal berikutnya/);
-    expect(onSolved).toHaveBeenCalledWith({ hintsUsed: 0 });
+    expect(onSolved).toHaveBeenCalledWith({ hintsUsed: 0, firstTry: true });
   });
 
   it('memberi umpan balik khusus saat rumus tertukar (IL01)', () => {
@@ -76,7 +76,9 @@ describe('Latihan terbimbing (Step Solver) P01', () => {
 
 describe('Latihan mandiri', () => {
   it('petunjuk dibatasi 1 dan satuan salah ditandai', () => {
-    render(<ProblemView problem={P.P13} sectionId="independent" support="independent" streakNoHint={0} onSolved={vi.fn()} />);
+    render(
+      <ProblemView problem={P.P13} sectionId="independent" support="independent" streakNoHint={0} onSolved={vi.fn()} />,
+    );
     expect(screen.getByRole('button', { name: /Petunjuk \(1\)/ })).toBeInTheDocument();
     type('Jawabanmu', '21');
     radio('cm²');

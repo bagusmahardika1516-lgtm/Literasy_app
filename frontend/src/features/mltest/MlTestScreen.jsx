@@ -8,7 +8,10 @@ import Button from '../../ui/Button.jsx';
 import card from '../../ui/Card.module.css';
 import Feedback from '../../ui/Feedback.jsx';
 import ScreenHeader from '../../ui/ScreenHeader.jsx';
+import { formatNumber, formatScore } from '../../ui/format.js';
+import ScoreRing from '../../ui/ScoreRing.jsx';
 import MlStage from './MlStage.jsx';
+import styles from './MlTestScreen.module.css';
 
 // Draf per siswa: siswa lain di HP yang sama tidak melihat/meneruskan jawaban ini
 const draftKey = () => studentKey('literasy.mltest-draft');
@@ -66,11 +69,26 @@ export default function MlTestScreen({ section, onBack, onDone }) {
 
   const alreadyDone = kind === 'pre' ? status.pre_done : status.post_done;
   if (alreadyDone) {
+    const score = kind === 'pre' ? status.pre_score : status.post_score;
+    const max = kind === 'pre' ? status.pre_max : status.post_max;
     return (
       <main>
         <ScreenHeader title={section.title} onBack={onBack} />
         <Feedback correct>Kamu sudah mengerjakan {section.title.toLowerCase()}. Terima kasih!</Feedback>
-        <Button variant="primary" block onClick={onDone}>
+        {score !== null && score !== undefined && max ? (
+          <div className={`${card.card} ${styles.done}`}>
+            <ScoreRing
+              value={score}
+              max={max}
+              size={112}
+              label={`Skor ${formatNumber(score)} dari ${formatNumber(max)}`}
+            >
+              <strong className="num">{formatScore(score, max)}</strong>
+            </ScoreRing>
+            <p className={card.muted}>Skor ini tersimpan di akunmu. Uji hanya bisa dikerjakan satu kali.</p>
+          </div>
+        ) : null}
+        <Button variant="primary" block onClick={onBack}>
           Kembali ke beranda
         </Button>
       </main>
@@ -114,11 +132,19 @@ export default function MlTestScreen({ section, onBack, onDone }) {
     setSending(true);
     setError('');
     try {
-      await submitMlTest(draft.id, kind, draft.answers);
+      const res = await submitMlTest(draft.id, kind, draft.answers);
       localStorage.removeItem(draftKey());
-      onDone();
+      onDone({ score: res.score, maxScore: res.max_score, details: { kind } });
     } catch (e) {
-      setError(e.message);
+      if (e.status === 409) {
+        // Sudah pernah dikirim (mis. dari HP lain): tampilkan status & skor yang tersimpan
+        localStorage.removeItem(draftKey());
+        getMlTestStatus()
+          .then(setStatus)
+          .catch(() => {});
+      } else {
+        setError(e.message);
+      }
       setSending(false);
     }
   }

@@ -12,12 +12,23 @@ export default function PracticeScreen({ section, onBack, onDone }) {
   const [i, setI] = useState(0);
   const [streakNoHint, setStreak] = useState(0); // untuk pemudaran petunjuk (F10)
   const [attemptKey, setAttemptKey] = useState(0);
+  const [items, setItems] = useState({}); // {P01: { first_try, hints }} — skor bagian
   const problem = BY_ID[section.items[i]];
 
-  function solved({ hintsUsed }) {
+  function solved({ hintsUsed, firstTry }) {
     setStreak((s) => (hintsUsed === 0 ? s + 1 : 0));
-    if (i === section.items.length - 1) onDone();
-    else setI(i + 1);
+    const next = { ...items, [problem.id]: { first_try: Boolean(firstTry), hints: hintsUsed } };
+    setItems(next);
+    if (i < section.items.length - 1) {
+      setI(i + 1);
+      return;
+    }
+    const rows = Object.values(next);
+    onDone({
+      score: rows.filter((r) => r.first_try).length,
+      maxScore: section.items.length,
+      details: { hints: rows.reduce((n, r) => n + r.hints, 0), items: next },
+    });
   }
 
   return (

@@ -129,6 +129,25 @@ class Event(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
 
 
+class SectionResult(Base):
+    """Hasil akhir satu kali menyelesaikan satu bagian belajar (skor per sesi).
+
+    Bagian materi (tanpa soal) hanya tercatat selesai: score/max_score kosong.
+    Uji Literasi tidak dicatat di sini — skornya dihitung dari tabel ml_tests.
+    """
+
+    __tablename__ = "section_results"
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True)
+    student_code: Mapped[str] = mapped_column(ForeignKey("students.code"), index=True)
+    section_id: Mapped[str] = mapped_column(String(32), index=True)
+    score: Mapped[float | None] = mapped_column(Numeric(6, 2))
+    max_score: Mapped[float | None] = mapped_column(Numeric(6, 2))
+    details: Mapped[dict] = mapped_column(JSON, default=dict)  # mis. {"first_try": 5, "hints": 2, "items": {...}}
+    started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
 class MlTest(Base):
     __tablename__ = "ml_tests"
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)

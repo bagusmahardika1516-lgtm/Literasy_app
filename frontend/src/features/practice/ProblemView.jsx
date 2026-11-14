@@ -19,7 +19,7 @@ import StepSolver from './StepSolver.jsx';
 
 /**
  * @param {{ problem: object, sectionId: string, support: 'guided'|'independent'|'literacy',
- *   streakNoHint: number, onSolved: (s: { hintsUsed: number }) => void }} props
+ *   streakNoHint: number, onSolved: (s: { hintsUsed: number, firstTry: boolean }) => void }} props
  */
 export default function ProblemView({ problem, sectionId, support, streakNoHint, onSolved }) {
   const [phase, setPhase] = useState(support === 'literacy' ? 'highlight' : 'answer');
@@ -28,6 +28,8 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
   const [hintsOpened, setHintsOpened] = useState(0);
   const [decision, setDecision] = useState(null);
   const started = useRef(Date.now());
+  // Benar di percobaan pertama = tidak ada jawaban/langkah salah sebelum jawaban akhir benar
+  const firstTry = useRef(null);
 
   const available = availableHintLevels({ support, streakNoHint, wrongOnCurrent: wrong });
   const useSolver = support === 'guided' && supportsStepSolver(problem);
@@ -48,6 +50,7 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
       setWrong((w) => w + 1);
       return;
     }
+    if (firstTry.current === null) firstTry.current = wrong === 0;
     if (problem.decision) setPhase('decision');
     else if (problem.selfExplain) setPhase('explain');
     else setPhase('done');
@@ -63,7 +66,12 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
     <div>
       {support === 'guided' && 'r' in problem.model && (
         <div className={card.visual}>
-          <SvgSector angle={problem.model.theta} radius={problem.model.r} highlight="none" unit={problem.answer.unit?.replace('2', '')} />
+          <SvgSector
+            angle={problem.model.theta}
+            radius={problem.model.r}
+            highlight="none"
+            unit={problem.answer.unit?.replace('2', '')}
+          />
         </div>
       )}
 
@@ -78,10 +86,20 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
       ) : (
         <>
           {!solved && (
-            <HintBox hints={problem.hints} available={available} opened={hintsOpened} onOpen={() => setHintsOpened((n) => n + 1)} />
+            <HintBox
+              hints={problem.hints}
+              available={available}
+              opened={hintsOpened}
+              onOpen={() => setHintsOpened((n) => n + 1)}
+            />
           )}
           {useSolver ? (
-            <StepSolver problem={problem} solved={solved} onWrong={() => setWrong((w) => w + 1)} onAttempt={onAttempt} />
+            <StepSolver
+              problem={problem}
+              solved={solved}
+              onWrong={() => setWrong((w) => w + 1)}
+              onAttempt={onAttempt}
+            />
           ) : (
             <AnswerPanel problem={problem} solved={solved} onAttempt={onAttempt} />
           )}
@@ -93,7 +111,12 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
           <p>
             <strong>{practice.decisionLabel}</strong> {problem.decision.question}
           </p>
-          <ChoiceList label={problem.decision.question} options={['ya', 'tidak']} value={decision} onChange={setDecision} />
+          <ChoiceList
+            label={problem.decision.question}
+            options={['ya', 'tidak']}
+            value={decision}
+            onChange={setDecision}
+          />
           {decision && (
             <Feedback correct={decisionOk}>
               {decisionOk ? 'Keputusanmu tepat.' : 'Bandingkan lagi hasil hitunganmu dengan angka di soal.'}
@@ -110,7 +133,11 @@ export default function ProblemView({ problem, sectionId, support, streakNoHint,
       {phase === 'explain' && <SelfExplain promptId={problem.selfExplain} onDone={() => setPhase('done')} />}
 
       {phase === 'done' && (
-        <Button variant="primary" block onClick={() => onSolved({ hintsUsed: hintsOpened })}>
+        <Button
+          variant="primary"
+          block
+          onClick={() => onSolved({ hintsUsed: hintsOpened, firstTry: firstTry.current === true })}
+        >
           {practice.correctNext} →
         </Button>
       )}

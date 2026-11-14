@@ -25,6 +25,11 @@ describe('Permainan Busur atau Juring?', () => {
     }
     expect(screen.getByText(/Semua kartu sudah tepat/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Selesai' }));
-    expect(onDone).toHaveBeenCalled();
+    // skor = kartu yang tepat pada pilihan pertama
+    expect(onDone).toHaveBeenCalledWith({
+      score: game.items.length - 1,
+      maxScore: game.items.length,
+      details: { missed: [game.items[0].id] },
+    });
   });
 });

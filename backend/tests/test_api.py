@@ -29,16 +29,18 @@ MLTEST = {
 
 
 def test_mltest_submit_scores_and_is_idempotent(client, auth):
-    assert client.post("/api/mltest/submit", json=MLTEST, headers=auth).json() == {"saved_items": 4}
-    assert client.post("/api/mltest/submit", json=MLTEST, headers=auth).json() == {"saved_items": 0}
+    first = client.post("/api/mltest/submit", json=MLTEST, headers=auth).json()
+    assert first["saved_items"] == 4
+    assert client.post("/api/mltest/submit", json=MLTEST, headers=auth).json()["saved_items"] == 0
     status = client.get("/api/mltest/status", headers=auth).json()
-    assert status == {"pre_done": True, "post_done": False}
+    assert (status["pre_done"], status["post_done"]) == (True, False)
 
 
 def test_mltest_status_is_per_student(client, auth):
     client.post("/api/mltest/submit", json=MLTEST, headers=auth)
     s02 = bearer(login(client, "8a-2026-s02", "rahasia-s02"))
-    assert client.get("/api/mltest/status", headers=s02).json() == {"pre_done": False, "post_done": False}
+    status = client.get("/api/mltest/status", headers=s02).json()
+    assert (status["pre_done"], status["post_done"], status["pre_score"]) == (False, False, None)
 
 
 def test_mltest_requires_login(client):

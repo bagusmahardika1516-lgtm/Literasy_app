@@ -13,9 +13,9 @@ from sqlalchemy.orm import Session
 
 from . import models  # noqa: F401  (mendaftarkan tabel ke Base.metadata)
 from .config import get_settings
-from .content import mltest_items, problems_by_id
+from .content import mltest_items, problems_by_id, sections
 from .db import Base, engine, get_db
-from .routers import auth, mltest, practice, records
+from .routers import auth, mltest, practice, progress, records
 from .schemas import HealthOut
 
 settings = get_settings()
@@ -27,13 +27,14 @@ async def lifespan(_: FastAPI):
         Base.metadata.create_all(engine)
     problems_by_id()  # gagal cepat bila konten rusak
     mltest_items()
+    sections()
     yield
 
 
 app = FastAPI(
     title="Literasy API",
-    version="0.3.0",
-    description="Backend aplikasi belajar panjang busur & luas juring (data penelitian, rekap guru).",
+    version="0.4.0",
+    description="Backend aplikasi belajar panjang busur & luas juring (login siswa, catatan & skor belajar).",
     lifespan=lifespan,
     # Produksi: DOCS_ENABLED=false agar /docs dan /openapi.json tidak terbuka untuk publik
     docs_url="/docs" if settings.docs_enabled else None,
@@ -52,6 +53,7 @@ app.include_router(auth.router)
 app.include_router(practice.router)
 app.include_router(mltest.router)
 app.include_router(records.router)
+app.include_router(progress.router)
 
 
 @app.get("/api/health", response_model=HealthOut, tags=["sistem"])

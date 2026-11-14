@@ -43,7 +43,10 @@ export default function LoginScreen() {
         </p>
       )}
 
-      <form onSubmit={onSubmit} noValidate className={styles.form}>
+      <form onSubmit={onSubmit} noValidate className={styles.form} aria-labelledby="judul-masuk">
+        <h2 id="judul-masuk" className={styles.formTitle}>
+          Masuk ke akunmu
+        </h2>
         <label className={styles.field}>
           Username
           <input

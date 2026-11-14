@@ -20,5 +20,11 @@ def problems_by_id() -> dict[str, dict[str, Any]]:
 
 
 @lru_cache
+def sections() -> list[dict[str, Any]]:
+    """Urutan bagian belajar (content/sequence.json)."""
+    return load_json("sequence.json")["sections"]
+
+
+@lru_cache
 def mltest_items() -> list[dict[str, Any]]:
     return load_json("mltest.json")["items"]

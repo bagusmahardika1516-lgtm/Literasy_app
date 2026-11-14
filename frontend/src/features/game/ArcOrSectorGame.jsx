@@ -15,12 +15,14 @@ export default function ArcOrSectorGame({ section, onBack, onDone }) {
   const [queue, setQueue] = useState(() => game.items.map((g) => g.id));
   const [picked, setPicked] = useState(null);
   const [doneCount, setDoneCount] = useState(0);
+  const [missed, setMissed] = useState(() => new Set()); // kartu yang pernah salah dipilih
   const item = game.items.find((g) => g.id === queue[0]);
   const correct = picked === item?.answer;
 
   function next() {
     const [head, ...rest] = queue;
     if (correct) setDoneCount((n) => n + 1);
+    else setMissed((m) => new Set(m).add(head));
     setQueue(correct ? rest : [...rest, head]); // salah → muncul lagi di akhir
     setPicked(null);
   }
@@ -29,6 +31,15 @@ export default function ArcOrSectorGame({ section, onBack, onDone }) {
     setQueue(game.items.map((g) => g.id));
     setPicked(null);
     setDoneCount(0);
+    setMissed(new Set());
+  }
+
+  function finish() {
+    onDone({
+      score: game.items.length - missed.size,
+      maxScore: game.items.length,
+      details: { missed: [...missed] },
+    });
   }
 
   if (!item) {
@@ -36,7 +47,7 @@ export default function ArcOrSectorGame({ section, onBack, onDone }) {
       <main>
         <ScreenHeader title={game.title} onBack={onBack} onRestart={restart} />
         <Feedback correct>Semua kartu sudah tepat. Kamu bisa membedakan busur dan juring!</Feedback>
-        <Button variant="primary" block onClick={onDone}>
+        <Button variant="primary" block onClick={finish}>
           Selesai
         </Button>
       </main>

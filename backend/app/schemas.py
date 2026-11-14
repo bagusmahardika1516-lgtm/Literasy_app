@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 if TYPE_CHECKING:
     from .models import Student
@@ -74,11 +74,17 @@ class MlTestSubmitIn(BaseModel):
 
 class MlTestSubmitOut(BaseModel):
     saved_items: int
+    score: float
+    max_score: float
 
 
 class MlTestStatusOut(BaseModel):
     pre_done: bool
     post_done: bool
+    pre_score: float | None = None
+    pre_max: float | None = None
+    post_score: float | None = None
+    post_max: float | None = None
 
 
 # --- Catatan belajar (attempts, skala usaha, refleksi) ---------------------
@@ -112,10 +118,60 @@ class ReflectionIn(BaseModel):
     created_at: datetime
 
 
+DETAILS_MAX_BYTES = 4_000
+
+
+class SectionResultIn(BaseModel):
+    id: uuid.UUID
+    section_id: str = Field(max_length=32)
+    score: float | None = Field(default=None, ge=0, le=1000)
+    max_score: float | None = Field(default=None, gt=0, le=1000)
+    details: dict[str, Any] = Field(default_factory=dict)
+    started_at: datetime | None = None
+    completed_at: datetime
+
+    @field_validator("details")
+    @classmethod
+    def _limit_details(cls, v: dict[str, Any]) -> dict[str, Any]:
+        if len(json.dumps(v, ensure_ascii=False)) > DETAILS_MAX_BYTES:
+            raise ValueError("Detail hasil terlalu panjang")
+        return v
+
+    @model_validator(mode="after")
+    def _score_pair(self) -> SectionResultIn:
+        if (self.score is None) != (self.max_score is None):
+            raise ValueError("score dan max_score harus diisi bersama")
+        if self.score is not None and self.max_score is not None and self.score > self.max_score:
+            raise ValueError("score melebihi max_score")
+        return self
+
+
 class RecordsIn(BaseModel):
     attempts: list[AttemptIn] = Field(default_factory=list, max_length=200)
     effort: list[EffortIn] = Field(default_factory=list, max_length=50)
     reflections: list[ReflectionIn] = Field(default_factory=list, max_length=50)
+    results: list[SectionResultIn] = Field(default_factory=list, max_length=50)
+
+
+# --- Progres (beranda) ------------------------------------------------------
+
+class ScoreOut(BaseModel):
+    score: float
+    max_score: float
+    completed_at: datetime | None = None
+
+
+class SectionProgressOut(BaseModel):
+    section_id: str
+    done: bool
+    times_completed: int
+    last: ScoreOut | None = None  # skor penyelesaian terakhir (None untuk bagian materi)
+    best: ScoreOut | None = None  # persentase tertinggi
+    last_completed_at: datetime | None = None
+
+
+class ProgressOut(BaseModel):
+    sections: list[SectionProgressOut]
 
 
 class RecordsOut(BaseModel):

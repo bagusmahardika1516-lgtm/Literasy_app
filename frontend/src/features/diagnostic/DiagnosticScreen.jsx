@@ -30,6 +30,15 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
     else setPhase('summary');
   }
 
+  function finish() {
+    const r = evaluateDiagnostic(diag, results);
+    onDone({
+      score: r.score,
+      maxScore: diag.items.length,
+      details: { pass: r.pass, wrong: diag.items.filter((d) => !results[d.id]).map((d) => d.id) },
+    });
+  }
+
   function restart() {
     setI(0);
     setValue('');
@@ -39,7 +48,9 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
 
   if (phase === 'remedial') {
     const { remedials } = evaluateDiagnostic(diag, results);
-    return <CardDeck cardIds={remedials} title="Mengingat kembali" onBack={() => setPhase('summary')} onDone={onDone} />;
+    return (
+      <CardDeck cardIds={remedials} title="Mengingat kembali" onBack={() => setPhase('summary')} onDone={finish} />
+    );
   }
 
   if (phase === 'summary') {
@@ -57,7 +68,7 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
           </Button>
         )}
         {r.pass && (
-          <Button variant="primary" block onClick={onDone} style={{ marginTop: 'var(--sp-3)' }}>
+          <Button variant="primary" block onClick={finish} style={{ marginTop: 'var(--sp-3)' }}>
             Lanjut →
           </Button>
         )}
@@ -68,7 +79,12 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
   const unitLabel = item.answer.unit ? practice.units[item.answer.unit] : undefined;
   return (
     <main>
-      <ScreenHeader title={section.title} progress={`${i + 1}/${diag.items.length}`} onBack={onBack} onRestart={restart} />
+      <ScreenHeader
+        title={section.title}
+        progress={`${i + 1}/${diag.items.length}`}
+        onBack={onBack}
+        onRestart={restart}
+      />
       <div className={card.card}>
         <DiagnosticVisual itemId={item.id} />
         <p style={{ margin: 'var(--sp-2) 0 0', fontWeight: 600, textAlign: 'center' }}>{item.prompt}</p>

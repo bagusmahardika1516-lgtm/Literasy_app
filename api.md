@@ -226,7 +226,13 @@ Dokumentasi interaktif otomatis: `http://127.0.0.1:8000/docs` (matikan di produk
 🔒 = wajib header `Authorization: Bearer <token>` dari `/api/auth/login`. Identitas siswa diambil dari token, bukan
 dari body. Sesi tidak valid → **401** dengan `detail.code`: `not_authenticated`, `invalid_token`,
 `session_replaced` (akun masuk di perangkat lain), `session_expired`, `session_revoked` (password direset),
-`account_disabled`. Sesi berlaku 30 hari dan diperpanjang setiap kali dipakai. Akun dikelola dengan
+`account_disabled`.
+
+`results[]` (hasil akhir satu bagian): `{id, section_id, score|null, max_score|null, details{}, started_at, completed_at}`.
+Skor = latihan: soal benar di percobaan pertama; diagnostik: jawaban benar; permainan: kartu tepat pada pilihan
+pertama. Bagian materi hanya `score: null` (selesai). Disimpan di tabel `section_results`.
+
+Sesi berlaku 30 hari dan diperpanjang setiap kali dipakai. Akun dikelola dengan
 `python -m scripts.manage_accounts` (tidak ada dashboard guru).
 
 | Metode | Path | Fungsi | Status |
@@ -237,11 +243,11 @@ dari body. Sesi tidak valid → **401** dengan `detail.code`: `not_authenticated
 | `GET` | `/api/auth/me` 🔒 → `{code, class_code, username}` | Siswa yang sedang masuk | ✅ v0.4.0 |
 | `POST` | `/api/practice/check` `{problem_id, value, unit?}` → `{correct, unit_ok, feedback, misconception_id}` | Pemeriksaan jawaban di server | ✅ v0.2.0 |
 | `GET` | `/api/mltest` | Soal Uji Literasi T1–T4 **tanpa kunci & skor** | ✅ v0.3.0 |
-| `GET` | `/api/mltest/status` 🔒 → `{pre_done, post_done}` | Cek uji sudah dikerjakan | ✅ v0.4.0 |
-| `POST` | `/api/mltest/submit` 🔒 `{submission_id, kind, answers}` → `{saved_items}` | Simpan & skor per tahap (idempoten) | ✅ v0.4.0 |
-| `POST` | `/api/records` 🔒 `{attempts[], effort[], reflections[]}` → `{inserted}` | Catatan belajar (idempoten, id UUID) | ✅ v0.4.0 |
+| `GET` | `/api/mltest/status` 🔒 → `{pre_done, post_done, pre_score, pre_max, post_score, post_max}` | Status & skor uji | ✅ v0.5.0 |
+| `POST` | `/api/mltest/submit` 🔒 `{submission_id, kind, answers}` → `{saved_items, score, max_score}` | Simpan & skor per tahap (idempoten). Jenis uji yang sama dari kiriman lain → **409** | ✅ v0.5.0 |
+| `POST` | `/api/records` 🔒 `{attempts[], effort[], reflections[], results[]}` → `{inserted}` | Catatan belajar + hasil akhir per bagian (idempoten, id UUID) | ✅ v0.5.0 |
+| `GET` | `/api/progress` 🔒 → `{sections: [{section_id, done, times_completed, last, best, last_completed_at}]}` | Progres & skor per bagian (beranda, pindah HP). Uji Awal/Akhir dihitung dari `ml_tests` | ✅ v0.5.0 |
 | `POST` | `/api/sessions` | Membuat sesi | Sprint 5 |
-| `POST` | `/api/students/progress` `{code, class_code}` | Progres milik sendiri (pindah HP) | Sprint 5 |
 | `GET` | `/api/research/export/{kind}.csv` | Ekspor CSV peneliti (role peneliti) | Sprint 5 |
 
 ### 4.1 Tabel
