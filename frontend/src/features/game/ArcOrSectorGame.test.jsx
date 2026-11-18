@@ -29,7 +29,8 @@ describe('Permainan Busur atau Juring?', () => {
     expect(onDone).toHaveBeenCalledWith({
       score: game.items.length - 1,
       maxScore: game.items.length,
-      details: { missed: [game.items[0].id] },
+      // answered: semua kartu terjawab tepat (server memeriksa daftar ini terhadap content/game.json)
+      details: { missed: [game.items[0].id], answered: expect.arrayContaining(game.items.map((g) => g.id)) },
     });
   });
 });

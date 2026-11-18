@@ -1,7 +1,7 @@
 // Hasil akhir satu bagian (skor per sesi) + status penyimpanan ke server.
 // Tanpa poin/peringkat/animasi hadiah (ADR-010): hanya ringkasan yang membantu siswa memutuskan langkah berikutnya.
 import { useEffect, useState } from 'react';
-import { flushNow, isQueued } from '../../data/records.js';
+import { flushNow, isQueued, rejectionOf } from '../../data/records.js';
 import Button from '../../ui/Button.jsx';
 import { formatDuration, formatNumber, formatScore } from '../../ui/format.js';
 import ScoreRing from '../../ui/ScoreRing.jsx';
@@ -22,7 +22,7 @@ function message(kind, ratio) {
   return 'Tidak apa-apa. Coba ulangi bagian ini, atau buka lagi Contoh Soal.';
 }
 
-/** Status simpan: 'saving' → 'saved' | 'pending' (offline, dikirim otomatis nanti). */
+/** Status simpan: 'saving' → 'saved' | 'pending' (offline, dikirim otomatis nanti) | 'rejected'. */
 function useSaveStatus(recordId, serverSaved) {
   const [status, setStatus] = useState(serverSaved || !recordId ? 'saved' : 'saving');
   useEffect(() => {
@@ -30,7 +30,9 @@ function useSaveStatus(recordId, serverSaved) {
     let alive = true;
     const check = () =>
       flushNow().then(() => {
-        if (alive) setStatus(isQueued(recordId) ? 'pending' : 'saved');
+        if (!alive) return;
+        if (isQueued(recordId)) setStatus('pending');
+        else setStatus(rejectionOf(recordId) ? 'rejected' : 'saved');
       });
     check();
     window.addEventListener('online', check);
@@ -109,6 +111,10 @@ export default function ResultScreen({ section, result, onContinue, onRetry, con
         {status === 'saving' && 'Menyimpan hasil…'}
         {status === 'saved' && '✓ Hasil tersimpan di akunmu'}
         {status === 'pending' && '↻ Belum tersambung. Hasil tersimpan di HP ini dan terkirim otomatis.'}
+        {status === 'rejected' &&
+          (rejectionOf(result.recordId)?.reason === 'incomplete'
+            ? '! Hasil ini belum tercatat karena masih ada soal yang belum terjawab. Ulangi bagian ini.'
+            : '! Hasil ini belum tercatat karena bagian ini masih terkunci. Selesaikan bagian sebelumnya dulu.')}
       </p>
 
       <div className={styles.actions}>

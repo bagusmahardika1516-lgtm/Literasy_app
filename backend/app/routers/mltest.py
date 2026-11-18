@@ -14,8 +14,9 @@ from sqlalchemy.orm import Session
 from ..auth import current_student
 from ..content import mltest_items
 from ..db import get_db
-from ..engine.mltest import public_items, score_item
+from ..engine.mltest import missing_answers, public_items, score_item
 from ..models import MlTest, Student
+from ..progression import INCOMPLETE, LOCKED, completed_sections, mltest_section, unlocked_sections
 from ..schemas import MlTestStatusOut, MlTestSubmitIn, MlTestSubmitOut
 
 router = APIRouter(prefix="/api/mltest", tags=["uji literasi"])
@@ -60,6 +61,13 @@ def submit(
     if unknown:
         raise HTTPException(422, detail=f"Soal tidak dikenal: {sorted(unknown)}")
 
+    # Pembukaan bertahap: Uji Akhir hanya bisa dikirim setelah bagian sebelumnya selesai
+    if mltest_section(body.kind)["id"] not in unlocked_sections(completed_sections(db, code)):
+        raise HTTPException(
+            403,
+            detail={"code": LOCKED, "message": "Bagian ini masih terkunci. Selesaikan bagian sebelumnya dulu."},
+        )
+
     # id deterministik → kiriman ulang (koneksi putus) tidak menggandakan data
     row_ids = {item_id: uuid.uuid5(body.submission_id, item_id) for item_id in items}
     existing = set(
@@ -67,6 +75,14 @@ def submit(
     )
     if existing and not existing <= set(row_ids.values()):
         raise HTTPException(409, detail="Uji ini sudah pernah dikirim.")
+
+    # Semua tahap di semua soal wajib dijawab (bukan wajib benar); skor tidak berubah
+    missing = missing_answers(list(items.values()), body.answers)
+    if missing:
+        raise HTTPException(
+            422,
+            detail={"code": INCOMPLETE, "message": "Masih ada soal yang belum dijawab.", "missing": missing},
+        )
 
     saved = 0
     for item_id, item in items.items():

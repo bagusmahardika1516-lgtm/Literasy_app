@@ -18,6 +18,7 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
   const [i, setI] = useState(0);
   const [value, setValue] = useState('');
   const [results, setResults] = useState({});
+  const [answers, setAnswers] = useState({}); // {D1: jawaban} — server memeriksa semua butir terjawab
   const [phase, setPhase] = useState('quiz'); // quiz → summary → remedial
   const item = diag.items[i];
 
@@ -25,6 +26,7 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
     const ok = checkAnswer(item, value).correct;
     const next = { ...results, [item.id]: ok };
     setResults(next);
+    setAnswers({ ...answers, [item.id]: String(value).slice(0, 32) });
     setValue('');
     if (i < diag.items.length - 1) setI(i + 1);
     else setPhase('summary');
@@ -35,7 +37,7 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
     onDone({
       score: r.score,
       maxScore: diag.items.length,
-      details: { pass: r.pass, wrong: diag.items.filter((d) => !results[d.id]).map((d) => d.id) },
+      details: { pass: r.pass, wrong: diag.items.filter((d) => !results[d.id]).map((d) => d.id), answers },
     });
   }
 
@@ -43,6 +45,7 @@ export default function DiagnosticScreen({ section, onBack, onDone }) {
     setI(0);
     setValue('');
     setResults({});
+    setAnswers({});
     setPhase('quiz');
   }
 

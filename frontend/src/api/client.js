@@ -17,6 +17,11 @@ const MESSAGES = {
   invalid_token: 'Silakan masuk lagi.',
 };
 
+const SECTION_MESSAGES = {
+  section_locked: 'Bagian ini masih terkunci. Selesaikan bagian sebelumnya dulu, lalu coba lagi.',
+  incomplete: 'Masih ada soal yang belum dijawab. Jawab semua soal dulu, lalu kirim lagi.',
+};
+
 /** Pesan untuk kode error dari server (detail.code). */
 export const messageFor = (code) => MESSAGES[code] ?? MESSAGES.invalid_token;
 
@@ -72,6 +77,9 @@ async function request(method, path, body, { auth = true, notifyUnauthorized = t
   }
   if (res.status === 409) throw new ApiError(typeof detail === 'string' ? detail : 'Data ini sudah ada.', 409);
   if (res.status === 429) throw new ApiError(messageFor('too_many_attempts'), 429, code);
+  // Pembukaan bertahap: bagian masih terkunci / ada soal yang belum dijawab
+  if (res.status === 403 && code === 'section_locked') throw new ApiError(SECTION_MESSAGES.section_locked, 403, code);
+  if (res.status === 422 && code === 'incomplete') throw new ApiError(SECTION_MESSAGES.incomplete, 422, code);
   if (res.status === 422) throw new ApiError('Format data belum benar.', 422);
   throw new ApiError('Server sedang bermasalah. Coba lagi sebentar.', res.status);
 }

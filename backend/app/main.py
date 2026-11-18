@@ -13,7 +13,7 @@ from sqlalchemy.orm import Session
 
 from . import models  # noqa: F401  (mendaftarkan tabel ke Base.metadata)
 from .config import get_settings
-from .content import mltest_items, problems_by_id, sections
+from .content import diagnostic_item_ids, example_prompts, game_item_ids, mltest_items, problems_by_id, sections
 from .db import Base, engine, get_db
 from .routers import auth, mltest, practice, progress, records
 from .schemas import HealthOut
@@ -28,6 +28,9 @@ async def lifespan(_: FastAPI):
     problems_by_id()  # gagal cepat bila konten rusak
     mltest_items()
     sections()
+    diagnostic_item_ids()  # dipakai untuk memeriksa "semua soal sudah dijawab"
+    game_item_ids()
+    example_prompts()
     yield
 
 

@@ -2,7 +2,7 @@
 
 import pytest
 
-from .conftest import bearer, login
+from .conftest import bearer, full_mltest_answers, login
 
 
 def test_health(client):
@@ -24,7 +24,9 @@ def test_mltest_items_have_no_keys(client):
 MLTEST = {
     "submission_id": "8d0f6f7e-4b6b-4a5a-9a2e-0d7b9a1c2e33",
     "kind": "pre",
-    "answers": {"T4": {"s5": "22", "s6": "Jawaban Doni salah; panjang busur 22 cm"}},
+    # Semua tahap wajib terisi (pembukaan bertahap); T4 s5/s6 tetap berisi jawaban contoh sebelumnya
+    "answers": full_mltest_answers()
+    | {"T4": full_mltest_answers()["T4"] | {"s5": "22", "s6": "Jawaban Doni salah; panjang busur 22 cm"}},
 }
 
 

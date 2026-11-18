@@ -168,11 +168,24 @@ class SectionProgressOut(BaseModel):
     last: ScoreOut | None = None  # skor penyelesaian terakhir (None untuk bagian materi)
     best: ScoreOut | None = None  # persentase tertinggi
     last_completed_at: datetime | None = None
+    # Pembukaan bertahap (app/progression.py): bagian terkunci tidak bisa dikerjakan
+    unlocked: bool = True
+    status: Literal["locked", "open", "done"] = "open"
 
 
 class ProgressOut(BaseModel):
     sections: list[SectionProgressOut]
 
 
+class RejectedResultOut(BaseModel):
+    """Hasil bagian yang tidak dicatat. reason: section_locked | incomplete | use_mltest_submit."""
+
+    id: uuid.UUID
+    section_id: str
+    reason: str
+    missing: list[str] = []
+
+
 class RecordsOut(BaseModel):
     inserted: int
+    rejected: list[RejectedResultOut] = []  # hanya muncul di respons bila ada yang ditolak

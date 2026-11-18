@@ -46,4 +46,46 @@ describe('mergeProgress', () => {
     const p = mergeProgress(IDS, null, [], { game: 'done' });
     expect(p.game.done).toBe(true);
   });
+
+  it('ada data server: tanda selesai lokal tidak membuka bagian (server = sumber kebenaran)', () => {
+    const p = mergeProgress(IDS, [], [], { guided: 'done' });
+    expect(p.guided.done).toBe(false);
+    expect(p.explore.status).toBe('locked');
+  });
+});
+
+const ORDER = ['pretest', 'diagnostic', 'explore', 'concept'];
+const srv = (id, done = false) => ({ section_id: id, done, times_completed: done ? 1 : 0, last: null, best: null });
+const statuses = (p) => ORDER.map((id) => p[id].status);
+
+describe('Pembukaan bertahap', () => {
+  it('siswa baru: hanya bagian pertama yang terbuka', () => {
+    const p = mergeProgress(ORDER, [], [], {});
+    expect(statuses(p)).toEqual(['open', 'locked', 'locked', 'locked']);
+    expect(p.diagnostic.requires).toBe('pretest');
+  });
+
+  it('bagian selesai membuka bagian berikutnya', () => {
+    const p = mergeProgress(ORDER, [srv('pretest', true)], [], {});
+    expect(statuses(p)).toEqual(['done', 'open', 'locked', 'locked']);
+  });
+
+  it('hasil yang belum terkirim (offline) juga membuka bagian berikutnya', () => {
+    const queued = [{ section_id: 'diagnostic', score: 5, max_score: 6, completed_at: '2026-11-14T09:00:00Z' }];
+    const p = mergeProgress(ORDER, [srv('pretest', true)], queued, {});
+    expect(statuses(p)).toEqual(['done', 'done', 'open', 'locked']);
+  });
+
+  it('mengulang bagian sebelumnya tidak mengunci bagian berikutnya', () => {
+    const server = [srv('pretest', true), srv('diagnostic', true)];
+    const retake = [{ section_id: 'pretest', score: null, max_score: null, completed_at: '2026-11-14T10:00:00Z' }];
+    const p = mergeProgress(ORDER, server, retake, {});
+    expect(p.pretest.times_completed).toBe(2);
+    expect(statuses(p)).toEqual(['done', 'done', 'open', 'locked']);
+  });
+
+  it('progres lama yang melompat tetap terbuka, begitu juga bagian sesudahnya', () => {
+    const p = mergeProgress(ORDER, [srv('explore', true)], [], {});
+    expect(statuses(p)).toEqual(['open', 'locked', 'done', 'open']);
+  });
 });

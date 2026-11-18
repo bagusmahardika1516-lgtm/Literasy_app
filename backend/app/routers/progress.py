@@ -11,6 +11,7 @@ from ..auth import current_student
 from ..content import sections
 from ..db import get_db
 from ..models import SectionResult, Student
+from ..progression import completed_sections, section_status, unlocked_sections
 from ..schemas import ProgressOut, ScoreOut, SectionProgressOut
 from .mltest import kind_totals
 
@@ -33,15 +34,23 @@ def get_progress(student: Student = Depends(current_student), db: Session = Depe
         by_section.setdefault(r.section_id, []).append(r)
 
     ml = kind_totals(db, student.code)
+    done = completed_sections(db, student.code)
+    unlocked = unlocked_sections(done)
     out: list[SectionProgressOut] = []
     for sec in sections():
         sid = sec["id"]
+        access = {"unlocked": sid in unlocked, "status": section_status(sid, done, unlocked)}
         if sec["kind"] == "mltest":
             total = ml.get(sec.get("testKind", ""))
             score = ScoreOut(score=total[0], max_score=total[1]) if total else None
             out.append(
                 SectionProgressOut(
-                    section_id=sid, done=total is not None, times_completed=1 if total else 0, last=score, best=score
+                    section_id=sid,
+                    done=total is not None,
+                    times_completed=1 if total else 0,
+                    last=score,
+                    best=score,
+                    **access,
                 )
             )
             continue
@@ -61,6 +70,7 @@ def get_progress(student: Student = Depends(current_student), db: Session = Depe
                 # persentase tertinggi; bila sama, yang terbaru
                 best=max(reversed(scored), key=_ratio) if scored else None,
                 last_completed_at=done_rows[-1].completed_at if done_rows else None,
+                **access,
             )
         )
     return ProgressOut(sections=out)

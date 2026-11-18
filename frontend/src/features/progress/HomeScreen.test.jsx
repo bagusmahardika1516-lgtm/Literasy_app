@@ -55,6 +55,28 @@ describe('Beranda', () => {
     expect(screen.getByRole('link', { name: /Eksplorasi/ })).toHaveAttribute('aria-current', 'step');
   });
 
+  it('siswa baru: hanya bagian pertama yang bisa dibuka, sisanya terkunci dengan gembok', async () => {
+    api.getProgress.mockResolvedValue({ sections: [] });
+    renderHome();
+    await waitFor(() => expect(api.getProgress).toHaveBeenCalled());
+    expect(screen.getAllByRole('link', { name: /Uji Awal Literasi/ })).toHaveLength(1);
+    expect(screen.queryByRole('link', { name: /Cek Prasyarat/ })).not.toBeInTheDocument();
+    expect(screen.getAllByText('Terkunci')).toHaveLength(11);
+    expect(screen.getByText('Selesaikan “Uji Awal Literasi” dulu')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Mulai Belajar/ })).toBeInTheDocument();
+  });
+
+  it('bagian selesai tetap bisa dibuka lagi dan bagian berikutnya terbuka', async () => {
+    api.getProgress.mockResolvedValue({
+      sections: [row('pretest', { done: true, times_completed: 1, last: { score: 10, max_score: 24 } })],
+    });
+    renderHome();
+    await waitFor(() => expect(screen.getByRole('link', { name: /Cek Prasyarat/ })).toBeInTheDocument());
+    expect(screen.getByRole('link', { name: /Uji Awal Literasi/ })).toHaveAttribute('href', '/bagian/pretest');
+    expect(screen.getByRole('link', { name: /Cek Prasyarat/ })).toHaveAttribute('aria-current', 'step');
+    expect(screen.getAllByText('Terkunci')).toHaveLength(10);
+  });
+
   it('offline: memakai cache terakhir dan memberi tahu', async () => {
     localStorage.setItem(
       'literasy.progress-cache.S01',

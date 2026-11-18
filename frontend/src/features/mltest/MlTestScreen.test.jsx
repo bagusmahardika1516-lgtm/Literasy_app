@@ -48,6 +48,24 @@ describe('Uji Literasi', () => {
     expect(localStorage.getItem('literasy.mltest-draft.S01')).toBeNull();
   });
 
+  it('satu langkah belum dijawab → belum bisa dikirim, ada jalan pintas ke langkah itu', async () => {
+    render(
+      <MlTestScreen section={{ title: 'Uji Awal Literasi', testKind: 'pre' }} onBack={vi.fn()} onDone={vi.fn()} />,
+    );
+    fireEvent.click(await screen.findByRole('button', { name: 'Mulai' }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut/ })); // langkah 1 dilewati tanpa jawaban
+    fireEvent.change(screen.getByLabelText('Jawabanmu'), { target: { value: '22' } });
+
+    expect(screen.getByRole('button', { name: 'Kirim semua jawaban' })).toBeDisabled();
+    expect(screen.getByText(/Soal 1 langkah 1/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Ke langkah yang belum dijawab' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'A' }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut/ }));
+
+    expect(screen.getByRole('button', { name: 'Kirim semua jawaban' })).toBeEnabled();
+    expect(api.submitMlTest).not.toHaveBeenCalled();
+  });
+
   it('tidak bisa mengulang uji yang sudah dikirim', async () => {
     api.getMlTestStatus.mockResolvedValueOnce({ pre_done: true, post_done: false });
     render(

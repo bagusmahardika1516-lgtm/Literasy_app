@@ -70,12 +70,45 @@ function scheduleFlush(ms) {
 
 const countOf = (q) => KINDS.reduce((n, k) => n + q[k].length, 0);
 
+// Hasil bagian yang ditolak server (bagian terkunci / soal belum lengkap), per siswa — untuk layar hasil
+const REJECTED = 'literasy.rejected';
+const REJECTED_MAX = 50;
+
+function rememberRejected(rows) {
+  const key = studentKey(REJECTED);
+  if (!key || !rows?.length) return;
+  try {
+    const now = JSON.parse(localStorage.getItem(key) ?? '{}');
+    for (const r of rows) now[r.id] = { reason: r.reason, section_id: r.section_id, missing: r.missing ?? [] };
+    const trimmed = Object.fromEntries(Object.entries(now).slice(-REJECTED_MAX));
+    localStorage.setItem(key, JSON.stringify(trimmed));
+  } catch {
+    // abaikan
+  }
+}
+
+/** @returns {{ reason: string, section_id: string, missing: string[] } | null} */
+export function rejectionOf(id) {
+  const key = studentKey(REJECTED);
+  if (!key) return null;
+  try {
+    return JSON.parse(localStorage.getItem(key) ?? '{}')[id] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function sendAll(key) {
   for (;;) {
     const q = readQueue(key);
     if (countOf(q) === 0) return;
-    const batch = Object.fromEntries(KINDS.map((k) => [k, q[k].slice(0, CHUNK[k])]));
-    await postRecords(batch);
+    // Hasil bagian diperiksa server terhadap jawabannya: kirim hasil hanya bila semua jawaban ikut terkirim
+    const answersFit = q.attempts.length <= CHUNK.attempts && q.reflections.length <= CHUNK.reflections;
+    const batch = Object.fromEntries(
+      KINDS.map((k) => [k, k === 'results' && !answersFit ? [] : q[k].slice(0, CHUNK[k])]),
+    );
+    const res = await postRecords(batch);
+    rememberRejected(res?.rejected); // hasil yang ditolak tidak dikirim ulang (penolakannya permanen)
     // hapus hanya yang sudah terkirim (catatan baru mungkin masuk selama pengiriman)
     const sent = new Set(KINDS.flatMap((k) => batch[k].map((r) => r.id)));
     const now = readQueue(key);

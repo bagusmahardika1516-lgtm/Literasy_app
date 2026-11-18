@@ -7,3 +7,12 @@
 .done p {
   margin: 0;
 }
+
+/* Peringatan langkah yang belum dijawab sebelum mengirim uji */
+.missing {
+  border-left: 4px solid var(--c-retry);
+}
+
+.missing p {
+  margin: 0 0 var(--sp-3);
+}

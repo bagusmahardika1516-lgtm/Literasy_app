@@ -51,6 +51,32 @@ def score_item(item: dict[str, Any], answers: dict[str, Any]) -> ItemScore:
     return result
 
 
+def is_filled(value: Any) -> bool:
+    if isinstance(value, bool) or value is None:
+        return False
+    return isinstance(value, str | int | float) and str(value).strip() != ""
+
+
+def stage_answered(stage: dict[str, Any], answer: Any) -> bool:
+    """Apakah tahap sudah dijawab (bukan benar/salah). Tidak memengaruhi skor."""
+    kind = stage["type"]
+    if kind == "choice":
+        return isinstance(answer, str) and answer in stage["choices"]
+    if kind == "fields":
+        return isinstance(answer, dict) and all(is_filled(answer.get(f["id"])) for f in stage["fields"])
+    return is_filled(answer)  # number, text
+
+
+def missing_answers(items: list[dict[str, Any]], answers: dict[str, Any]) -> list[str]:
+    """Tahap yang belum dijawab, berbentuk "T1.s3". Dicocokkan dengan soal di mltest.json."""
+    missing = []
+    for item in items:
+        given = answers.get(item["id"])
+        given = given if isinstance(given, dict) else {}
+        missing += [f"{item['id']}.{st['id']}" for st in item["stages"] if not stage_answered(st, given.get(st["id"]))]
+    return missing
+
+
 def public_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Salinan soal TANPA kunci jawaban & skor untuk dikirim ke HP siswa."""
     out = []

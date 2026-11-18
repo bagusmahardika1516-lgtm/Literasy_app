@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getMlTest, getMlTestStatus, submitMlTest } from '../../api/client.js';
 import { studentKey } from '../../data/profile.js';
+import { flushNow } from '../../data/records.js';
 import { uuid } from '../../data/uuid.js';
 import Button from '../../ui/Button.jsx';
 import card from '../../ui/Card.module.css';
@@ -10,6 +11,7 @@ import Feedback from '../../ui/Feedback.jsx';
 import ScreenHeader from '../../ui/ScreenHeader.jsx';
 import { formatNumber, formatScore } from '../../ui/format.js';
 import ScoreRing from '../../ui/ScoreRing.jsx';
+import { missingStages } from './answered.js';
 import MlStage from './MlStage.jsx';
 import styles from './MlTestScreen.module.css';
 
@@ -128,10 +130,15 @@ export default function MlTestScreen({ section, onBack, onDone }) {
     if (a >= 0 && a < items.length) update({ ...draft, pos: [a, b] });
   }
 
+  // Semua langkah di semua soal wajib dijawab sebelum dikirim (server memeriksa hal yang sama)
+  const missing = missingStages(items, draft.answers);
+
   async function send() {
+    if (missing.length > 0) return;
     setSending(true);
     setError('');
     try {
+      await flushNow(); // hasil bagian sebelumnya harus sudah di server agar uji ini terbuka di sana
       const res = await submitMlTest(draft.id, kind, draft.answers);
       localStorage.removeItem(draftKey());
       onDone({ score: res.score, maxScore: res.max_score, details: { kind } });
@@ -162,11 +169,26 @@ export default function MlTestScreen({ section, onBack, onDone }) {
         ))}
       </div>
       <MlStage key={`${item.id}-${stage.id}`} stage={stage} value={answer} onChange={setAnswer} />
+      {isLast && missing.length > 0 && (
+        <div className={`${card.card} ${styles.missing}`} role="status">
+          <p>
+            Masih ada <strong className="num">{missing.length}</strong> langkah yang belum dijawab (
+            {missing
+              .slice(0, 3)
+              .map((m) => m.label)
+              .join(', ')}
+            {missing.length > 3 ? ', …' : ''}). Semua langkah harus dijawab sebelum dikirim.
+          </p>
+          <Button block onClick={() => update({ ...draft, pos: missing[0].pos })}>
+            Ke langkah yang belum dijawab
+          </Button>
+        </div>
+      )}
       {error && <Feedback correct={false}>{error}</Feedback>}
       <div className={card.actions}>
         {(ii > 0 || si > 0) && <Button onClick={() => move(-1)}>Kembali</Button>}
         {isLast ? (
-          <Button variant="primary" disabled={sending} onClick={send}>
+          <Button variant="primary" disabled={sending || missing.length > 0} onClick={send}>
             {sending ? 'Mengirim…' : 'Kirim semua jawaban'}
           </Button>
         ) : (

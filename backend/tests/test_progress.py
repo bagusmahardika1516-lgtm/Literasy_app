@@ -2,7 +2,9 @@
 
 import pytest
 
-from .conftest import bearer, login
+from .conftest import bearer, complete_before, full_mltest_answers, login
+
+GUIDED_ITEMS = ["P01", "P02", "P03", "P04", "P05", "P06"]
 
 
 def result(rid, section="guided", score=4, max_score=6, at="2026-11-14T08:00:00Z", **extra):
@@ -17,6 +19,14 @@ def result(rid, section="guided", score=4, max_score=6, at="2026-11-14T08:00:00Z
     } | extra
 
 
+def guided_attempts(at="2026-11-14T07:55:00Z", items=GUIDED_ITEMS, prefix="bbbbbbbb-0000-4000-8000-"):
+    """Jawaban untuk setiap soal Latihan Terbimbing (syarat bagian selesai)."""
+    return [
+        {"id": f"{prefix}{i:012d}", "problem_id": pid, "section_id": "guided", "correct": True, "created_at": at}
+        for i, pid in enumerate(items, start=1)
+    ]
+
+
 def progress_of(client, headers):
     return {s["section_id"]: s for s in client.get("/api/progress", headers=headers).json()["sections"]}
 
@@ -27,17 +37,20 @@ def test_progress_empty_lists_all_sections(client, auth):
     assert all(not s["done"] and s["last"] is None for s in p.values())
 
 
-def test_results_saved_and_idempotent(client, auth):
-    body = {"results": [result("aaaaaaaa-0000-4000-8000-000000000001")]}
-    assert client.post("/api/records", json=body, headers=auth).json() == {"inserted": 1}
+def test_results_saved_and_idempotent(client, auth, db_factory):
+    complete_before(db_factory, "guided")
+    body = {"attempts": guided_attempts(), "results": [result("aaaaaaaa-0000-4000-8000-000000000001")]}
+    assert client.post("/api/records", json=body, headers=auth).json() == {"inserted": 7}  # 6 jawaban + 1 hasil
     assert client.post("/api/records", json=body, headers=auth).json() == {"inserted": 0}
     g = progress_of(client, auth)["guided"]
     assert g["done"] and g["times_completed"] == 1
     assert g["last"]["score"] == 4 and g["last"]["max_score"] == 6
 
 
-def test_last_and_best_score(client, auth):
+def test_last_and_best_score(client, auth, db_factory):
+    complete_before(db_factory, "guided")
     body = {
+        "attempts": guided_attempts(),
         "results": [
             result("aaaaaaaa-0000-4000-8000-000000000001", score=5, at="2026-11-14T08:00:00Z"),
             result("aaaaaaaa-0000-4000-8000-000000000002", score=3, at="2026-11-14T09:00:00Z"),
@@ -50,7 +63,8 @@ def test_last_and_best_score(client, auth):
     assert g["best"]["score"] == 5
 
 
-def test_unscored_section_is_done_without_score(client, auth):
+def test_unscored_section_is_done_without_score(client, auth, db_factory):
+    complete_before(db_factory, "explore")
     body = {"results": [result("aaaaaaaa-0000-4000-8000-000000000003", section="explore", score=None, max_score=None)]}
     assert client.post("/api/records", json=body, headers=auth).status_code == 200
     e = progress_of(client, auth)["explore"]
@@ -72,8 +86,11 @@ def test_invalid_results_rejected(client, auth, bad):
     assert client.post("/api/records", json={"results": [r]}, headers=auth).status_code == 422
 
 
-def test_progress_is_per_student(client, auth):
-    client.post("/api/records", json={"results": [result("aaaaaaaa-0000-4000-8000-000000000005")]}, headers=auth)
+def test_progress_is_per_student(client, auth, db_factory):
+    complete_before(db_factory, "guided")
+    body = {"attempts": guided_attempts(), "results": [result("aaaaaaaa-0000-4000-8000-000000000005")]}
+    client.post("/api/records", json=body, headers=auth)
+    assert progress_of(client, auth)["guided"]["done"] is True
     s02 = bearer(login(client, "8a-2026-s02", "rahasia-s02"))
     assert progress_of(client, s02)["guided"]["done"] is False
 
@@ -85,7 +102,7 @@ def test_progress_requires_login(client):
 SUBMIT = {
     "submission_id": "8d0f6f7e-4b6b-4a5a-9a2e-0d7b9a1c2e33",
     "kind": "pre",
-    "answers": {"T4": {"s5": "22"}},
+    "answers": full_mltest_answers() | {"T4": full_mltest_answers()["T4"] | {"s5": "22"}},
 }
 
 
@@ -105,10 +122,11 @@ def test_mltest_score_returned_and_in_progress(client, auth):
     assert p["posttest"]["done"] is False
 
 
-def test_mltest_second_submission_rejected(client, auth):
+def test_mltest_second_submission_rejected(client, auth, db_factory):
     client.post("/api/mltest/submit", json=SUBMIT, headers=auth)
     other = SUBMIT | {"submission_id": "8d0f6f7e-4b6b-4a5a-9a2e-0d7b9a1c2e99"}
     assert client.post("/api/mltest/submit", json=other, headers=auth).status_code == 409
-    # posttest tetap boleh
+    # posttest tetap boleh setelah bagian sebelumnya selesai (pembukaan bertahap)
+    complete_before(db_factory, "posttest", tests=False)
     post = other | {"kind": "post"}
     assert client.post("/api/mltest/submit", json=post, headers=auth).status_code == 200

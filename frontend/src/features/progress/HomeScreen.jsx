@@ -1,21 +1,22 @@
-// Beranda / jalur belajar (design.md §4.1). Semua bagian bisa dibuka; yang disarankan ditandai.
+// Beranda / jalur belajar (design.md §4.1). Pembukaan bertahap: bagian berikutnya terbuka setelah bagian
+// sebelumnya selesai (semua soal dijawab); bagian yang sudah terbuka boleh diulang kapan saja.
 // Progres & skor dibaca dari server (GET /api/progress) — tetap ada walau pindah HP.
 import sequence from '@content/sequence.json';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getProgress } from '../../api/client.js';
-import { localProgress, writeCache } from '../../data/progress.js';
 import { flush, pendingCount } from '../../data/records.js';
 import Button from '../../ui/Button.jsx';
 import ConfirmDialog from '../../ui/ConfirmDialog.jsx';
 import { formatNumber, formatScore } from '../../ui/format.js';
+import LockIcon from '../../ui/LockIcon.jsx';
 import ScoreRing from '../../ui/ScoreRing.jsx';
 import { useAuth } from '../auth/AuthProvider.jsx';
 import styles from './HomeScreen.module.css';
 import UpdatePrompt from './UpdatePrompt.jsx';
+import { useProgress } from './useProgress.js';
 
 const SECTIONS = sequence.sections;
-const IDS = SECTIONS.map((s) => s.id);
+const TITLE = Object.fromEntries(SECTIONS.map((s) => [s.id, s.title]));
 
 const KIND_LABEL = {
   mltest: 'Uji',
@@ -32,29 +33,6 @@ const KIND_LABEL = {
 function subtitle(s) {
   const n = s.items?.length;
   return n ? `${KIND_LABEL[s.kind]} · ${n} soal` : KIND_LABEL[s.kind];
-}
-
-/** Progres server + antrean lokal. sync: 'loading' | 'ok' | 'offline'. */
-function useProgress() {
-  const [progress, setProgress] = useState(() => localProgress(IDS));
-  const [sync, setSync] = useState('loading');
-
-  useEffect(() => {
-    let alive = true;
-    // kirim dulu yang tertunda agar server punya data terbaru, lalu baca progres
-    flush()
-      .then(() => getProgress())
-      .then((res) => {
-        writeCache(res.sections);
-        if (alive) setSync('ok');
-      })
-      .catch(() => alive && setSync('offline'))
-      .finally(() => alive && setProgress(localProgress(IDS)));
-    return () => {
-      alive = false;
-    };
-  }, []);
-  return { progress, sync };
 }
 
 function TestCard({ progress }) {
@@ -106,7 +84,8 @@ export default function HomeScreen() {
   const [confirm, setConfirm] = useState(0); // >0: jumlah catatan tertunda, dialog terbuka
 
   const doneCount = SECTIONS.filter((s) => progress[s.id]?.done).length;
-  const next = SECTIONS.find((s) => !progress[s.id]?.done);
+  // Bagian berikutnya = bagian terbuka pertama yang belum selesai
+  const next = SECTIONS.find((s) => progress[s.id]?.status === 'open');
   const pending = pendingCount();
 
   async function onLogout() {
@@ -192,6 +171,23 @@ export default function HomeScreen() {
           const done = Boolean(p?.done);
           const isNext = next?.id === s.id;
           const score = p?.last;
+          if (p?.status === 'locked') {
+            // Terkunci: bukan tautan, tidak bisa dibuka (server juga menolak hasilnya)
+            return (
+              <li key={s.id}>
+                <div className={`${styles.item} ${styles.locked}`} aria-disabled="true">
+                  <span aria-hidden="true" className={styles.step}>
+                    <LockIcon size={15} />
+                  </span>
+                  <span className={styles.itemText}>
+                    <span className={styles.itemTitle}>{s.title}</span>
+                    <span className={styles.itemSub}>Selesaikan “{TITLE[p.requires]}” dulu</span>
+                  </span>
+                  <span className={`${styles.chip} ${styles.chipLocked}`}>Terkunci</span>
+                </div>
+              </li>
+            );
+          }
           return (
             <li key={s.id}>
               <Link

@@ -8,9 +8,33 @@ const CACHE = 'literasy.progress-cache';
 
 /**
  * @typedef {{ score: number, max_score: number, completed_at?: string | null }} Score
+ * @typedef {'locked' | 'open' | 'done'} SectionStatus
  * @typedef {{ section_id: string, done: boolean, times_completed: number, last: Score | null,
- *   best: Score | null, last_completed_at?: string | null, pending?: boolean }} SectionProgress
+ *   best: Score | null, last_completed_at?: string | null, pending?: boolean,
+ *   unlocked?: boolean, status?: SectionStatus, requires?: string | null }} SectionProgress
  */
+
+/**
+ * Pembukaan bertahap — aturan yang sama dengan backend/app/progression.py:
+ * bagian pertama selalu terbuka; bagian berikutnya terbuka setelah bagian sebelumnya selesai;
+ * bagian yang sudah pernah selesai tetap terbuka (mengulang tidak pernah mengunci apa pun).
+ * Server tetap memeriksa ulang setiap hasil, jadi ini hanya untuk tampilan dan navigasi.
+ * @param {string[]} sectionIds urutan bagian
+ * @param {Record<string, SectionProgress>} byId diubah di tempat
+ */
+export function applyUnlocks(sectionIds, byId) {
+  let previousDone = true;
+  let previousId = null;
+  for (const id of sectionIds) {
+    const s = byId[id];
+    s.unlocked = previousDone || s.done;
+    s.status = s.done ? 'done' : s.unlocked ? 'open' : 'locked';
+    s.requires = previousId; // bagian yang harus selesai lebih dulu
+    previousDone = s.done;
+    previousId = id;
+  }
+  return byId;
+}
 
 /** @returns {SectionProgress[] | null} */
 export function readCache() {
@@ -63,10 +87,12 @@ export function mergeProgress(sectionIds, server, queued, localDone) {
         if (ratio(sc) >= ratio(s.best)) s.best = sc;
       }
     }
-    if (localDone[id] === 'done') s.done = true;
+    // Tanda selesai lokal versi lama hanya dipakai bila belum pernah ada data dari server
+    // (server = sumber kebenaran; tanda lokal bisa berasal dari hasil yang ditolak server)
+    if (!server && localDone[id] === 'done') s.done = true;
     out[id] = s;
   }
-  return out;
+  return applyUnlocks(sectionIds, out);
 }
 
 /** Progres saat ini tanpa jaringan (cache + antrean). */

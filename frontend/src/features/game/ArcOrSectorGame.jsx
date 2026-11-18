@@ -16,13 +16,16 @@ export default function ArcOrSectorGame({ section, onBack, onDone }) {
   const [picked, setPicked] = useState(null);
   const [doneCount, setDoneCount] = useState(0);
   const [missed, setMissed] = useState(() => new Set()); // kartu yang pernah salah dipilih
+  const [answered, setAnswered] = useState(() => new Set()); // kartu yang sudah dijawab tepat
   const item = game.items.find((g) => g.id === queue[0]);
   const correct = picked === item?.answer;
 
   function next() {
     const [head, ...rest] = queue;
-    if (correct) setDoneCount((n) => n + 1);
-    else setMissed((m) => new Set(m).add(head));
+    if (correct) {
+      setDoneCount((n) => n + 1);
+      setAnswered((a) => new Set(a).add(head));
+    } else setMissed((m) => new Set(m).add(head));
     setQueue(correct ? rest : [...rest, head]); // salah → muncul lagi di akhir
     setPicked(null);
   }
@@ -32,13 +35,14 @@ export default function ArcOrSectorGame({ section, onBack, onDone }) {
     setPicked(null);
     setDoneCount(0);
     setMissed(new Set());
+    setAnswered(new Set());
   }
 
   function finish() {
     onDone({
       score: game.items.length - missed.size,
       maxScore: game.items.length,
-      details: { missed: [...missed] },
+      details: { missed: [...missed], answered: [...answered] }, // server memeriksa semua kartu terjawab
     });
   }
 

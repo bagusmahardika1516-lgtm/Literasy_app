@@ -106,6 +106,12 @@
   color: var(--c-retry);
 }
 
+.rejected {
+  background: color-mix(in srgb, var(--c-retry) 12%, var(--c-surface));
+  color: var(--c-retry);
+  border-radius: var(--radius);
+}
+
 .actions {
   display: flex;
   flex-direction: column;

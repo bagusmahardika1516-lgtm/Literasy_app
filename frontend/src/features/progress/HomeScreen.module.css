@@ -264,3 +264,34 @@
   background: var(--c-sector);
   color: var(--c-on-primary);
 }
+
+/* Bagian terkunci (pembukaan bertahap): redup, tanpa efek tekan, tidak bisa diklik */
+.locked {
+  background: var(--c-surface-2);
+  border-style: dashed;
+  color: var(--c-muted);
+  cursor: not-allowed;
+}
+
+.locked:hover {
+  border-color: color-mix(in srgb, var(--c-line) 60%, transparent);
+  box-shadow: none;
+}
+
+.locked:active {
+  transform: none;
+}
+
+.locked .itemTitle {
+  color: var(--c-muted);
+}
+
+.chipLocked {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: transparent;
+  border: 1px solid var(--c-line);
+  color: var(--c-muted);
+  font-weight: 600;
+}
