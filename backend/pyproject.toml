@@ -1,8 +1,21 @@
+
 [project]
 name = "literasy-backend"
 version = "0.2.0"
 description = "Backend FastAPI aplikasi Literasy: Busur & Juring"
 requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0.40",
+    "pydantic>=2.11",
+    "pydantic-settings>=2.6",
+    "psycopg[binary]>=3.2.10",
+    "argon2-cffi>=23.1"
+]
+
+[tool.vercel]
+entrypoint = "app.main:app"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -14,7 +27,7 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-ignore = ["B008"]  # Depends() di argumen default adalah pola resmi FastAPI
+ignore = ["B008"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["E501"]  # tabel parametrize boleh panjang
+"tests/*" = ["E501"]
